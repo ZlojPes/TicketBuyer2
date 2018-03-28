@@ -36,8 +36,8 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public void trainNumberSelected() {
-
+    public void trainNumberSelected(String s) {
+        gui.setTrainNumberFieldEnabled(s.equals("Задать"));
     }
 
     @Override
@@ -46,8 +46,8 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public void authSelected() {
-
+    public void authSelected(boolean selected) {
+        gui.setAuthFieldsSelected(selected);
     }
 
     @Override
