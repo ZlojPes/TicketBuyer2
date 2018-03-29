@@ -5,9 +5,9 @@ import javax.swing.*;
 public interface Controller {
     void fromFieldTyping();
 
-    void toFieldTyping();
+    void destFieldTyping();
 
-    void changeDirection();
+    void directionChanged();
 
     void dateChanged();
 
@@ -17,16 +17,13 @@ public interface Controller {
 
     void authSelected(boolean selected);
 
-    void startPressed();
+    void startPressed(String currentLabel);
 
-    void passengerEnabled(int num);
+    void passengerEnabled(int num, boolean enabled);
 
-    void textfieldFocused(JTextField field);
+    void manualPlacesSelected(boolean selected);
 
-    void manualPlacesSelected();
+    void wagonNumberSelected(boolean selected);
 
-    void wagonNumberSelected();
-
-    void exceptWagonSelected();
-
+    void exceptWagonSelected(boolean selected);
 }

@@ -21,12 +21,12 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public void toFieldTyping() {
+    public void destFieldTyping() {
 
     }
 
     @Override
-    public void changeDirection() {
+    public void directionChanged() {
 
     }
 
@@ -51,32 +51,33 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public void startPressed() {
-
+    public void startPressed(String currentLabel) {
+        String out;
+        if (currentLabel.equals("СТАРТ")) {
+            out = "СТОП";
+        } else {
+            out = "СТАРТ";
+        }
+        gui.setStartButtonLabel(out);
     }
 
     @Override
-    public void passengerEnabled(int num) {
-
+    public void passengerEnabled(int num, boolean enable) {
+        gui.enablePassenger(num, enable);
     }
 
     @Override
-    public void textfieldFocused(JTextField field) {
-
+    public void manualPlacesSelected(boolean selected) {
+        gui.setPlacesEnabled(selected);
     }
 
     @Override
-    public void manualPlacesSelected() {
-
+    public void wagonNumberSelected(boolean enable) {
+        gui.setWagonOnlyFieldEnabled(enable);
     }
 
     @Override
-    public void wagonNumberSelected() {
-
-    }
-
-    @Override
-    public void exceptWagonSelected() {
-
+    public void exceptWagonSelected(boolean selected) {
+        gui.setWagonExceptFieldEnabled(selected);
     }
 }

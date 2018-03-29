@@ -3,6 +3,8 @@ package com.ospavliuk.ticketbuyer2;
 import com.ospavliuk.ticketbuyer2.controller.Controller;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.Arrays;
 
 public class Gui extends JFrame {
@@ -64,7 +66,7 @@ public class Gui extends JFrame {
         passwordLabel = new JLabel();
         passwordField = new JPasswordField();
         fromField = new JComboBox<>();
-        toField = new JComboBox<>();
+        destField = new JComboBox<>();
         c1Button = new JRadioButton();
         c2Button = new JRadioButton();
         timeBox = new JComboBox<>();
@@ -111,12 +113,12 @@ public class Gui extends JFrame {
         lateralDiscardBox = new JCheckBox();
         manualPlaceBox = new JCheckBox();
         placesLabel = new JLabel();
-        place1field = new JTextField();
-        place2field = new JTextField();
-        place3field = new JTextField();
-        place4field = new JTextField();
-        place5field = new JTextField();
-        place6field = new JTextField();
+        placeField1 = new JTextField();
+        placefield2 = new JTextField();
+        placefield3 = new JTextField();
+        placefield4 = new JTextField();
+        placefield5 = new JTextField();
+        placefield6 = new JTextField();
         childBox1 = new JCheckBox();
         jSeparator8 = new JSeparator();
         wagonNumLabel = new JLabel();
@@ -127,6 +129,7 @@ public class Gui extends JFrame {
         wagonExceptField = new JTextField();
         fullOrderBox = new JCheckBox();
         sameCupeButton = new JCheckBox();
+        Font font = new java.awt.Font("Tahoma", Font.PLAIN, 14);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ticket Buyer 2.0 by Alexander Pavliuk");
@@ -134,7 +137,7 @@ public class Gui extends JFrame {
         setLocationByPlatform(true);
         setResizable(false);
 
-        fromLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        fromLabel.setFont(font); // NOI18N
         fromLabel.setText("Откуда");
         fromLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -142,16 +145,16 @@ public class Gui extends JFrame {
             }
         });
 
-        toLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        toLabel.setFont(font); // NOI18N
         toLabel.setText("Куда");
 
-        changeButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        changeButton.setFont(font); // NOI18N
         changeButton.setText("Поменять");
         changeButton.setEnabled(false);
         changeButton.setPreferredSize(new java.awt.Dimension(90, 25));
         changeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                changeButtonActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                controller.directionChanged();
             }
         });
 
@@ -159,17 +162,17 @@ public class Gui extends JFrame {
 
         monthBox.setModel(new DefaultComboBoxModel<>(new String[]{"---", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"}));
 
-        dateLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        dateLabel.setFont(font); // NOI18N
         dateLabel.setText("Отправление:");
 
-        numTrainLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        numTrainLabel.setFont(font); // NOI18N
         numTrainLabel.setText("Номер поезда:");
 
         buttonGroup1.add(anyTrainButton);
         anyTrainButton.setSelected(true);
         anyTrainButton.setText("Любой");
         anyTrainButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 controller.trainNumberSelected("Любой");
             }
         });
@@ -177,25 +180,25 @@ public class Gui extends JFrame {
         buttonGroup1.add(specifyTrainButton);
         specifyTrainButton.setText("Задать");
         specifyTrainButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 controller.trainNumberSelected("Задать");
             }
         });
 
-        trainNumberField.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        trainNumberField.setFont(new java.awt.Font("Tahoma", Font.BOLD | Font.ITALIC, 14)); // NOI18N
         trainNumberField.setForeground(new java.awt.Color(255, 0, 0));
         trainNumberField.setToolTipText("Номер поезда");
         trainNumberField.setEnabled(false);
 
-        wagonTypeLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        wagonTypeLabel.setFont(font); // NOI18N
         wagonTypeLabel.setText("Тип вагона:");
 
-        startButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        startButton.setFont(new java.awt.Font("Tahoma", Font.PLAIN, 18)); // NOI18N
         startButton.setText("СТАРТ");
         startButton.setEnabled(false);
         startButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startButtonActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                controller.startPressed(startButton.getText());
             }
         });
 
@@ -207,7 +210,7 @@ public class Gui extends JFrame {
 
         authorizeBox.setText("Аутентификация на uz.gov.ua");
         authorizeBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 controller.authSelected(authorizeBox.isSelected());
             }
         });
@@ -221,31 +224,35 @@ public class Gui extends JFrame {
         passwordField.setEnabled(false);
 
         fromField.setEditable(true);
-        fromField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        fromField.setFont(font); // NOI18N
         fromField.setMinimumSize(new java.awt.Dimension(6, 23));
         fromField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 fromFieldActionPerformed(evt);
             }
         });
 
-        toField.setEditable(true);
-        toField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        toField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                toFieldActionPerformed(evt);
+        destField.setEditable(true);
+        destField.setFont(font);
+        destField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                controller.fromFieldTyping();
             }
         });
-        toField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                toFieldKeyReleased(evt);
+        destField.addItem("test");
+        destField.addItem("test2");
+        destField.addItem("test3");
+        destField.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                println(destField.getSelectedItem().toString());
             }
         });
 
         buttonGroup2.add(plazkartButton);
         plazkartButton.setText("Плацкарт");
         plazkartButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 controller.wagonTypeSelected("Плацкарт");
             }
         });
@@ -253,7 +260,7 @@ public class Gui extends JFrame {
         buttonGroup2.add(cupeButton);
         cupeButton.setText("Купе");
         cupeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 controller.wagonTypeSelected("Купе");
             }
         });
@@ -261,7 +268,7 @@ public class Gui extends JFrame {
         buttonGroup2.add(luxButton);
         luxButton.setText("Люкс");
         luxButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 controller.wagonTypeSelected("Люкс");
             }
         });
@@ -269,7 +276,7 @@ public class Gui extends JFrame {
         buttonGroup2.add(c1Button);
         c1Button.setText("С1");
         c1Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 controller.wagonTypeSelected("C1");
             }
         });
@@ -277,7 +284,7 @@ public class Gui extends JFrame {
         buttonGroup2.add(c2Button);
         c2Button.setText("С2");
         c2Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 controller.wagonTypeSelected("C2");
             }
         });
@@ -285,14 +292,14 @@ public class Gui extends JFrame {
         buttonGroup2.add(anyButton);
         anyButton.setText("Любой");
         anyButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 controller.wagonTypeSelected("Любой");
             }
         });
 
         timeBox.setModel(new DefaultComboBoxModel<>(new String[]{"00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"}));
 
-        browserLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        browserLabel.setFont(font); // NOI18N
         browserLabel.setText("Браузер:");
 
         buttonGroup4.add(edgeButton);
@@ -340,7 +347,7 @@ public class Gui extends JFrame {
                                                                 .addGap(18, 18, 18)
                                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                                         .addComponent(fromField, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                        .addComponent(toField, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                                        .addComponent(destField, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                                                 .addGap(18, 18, 18)
                                                                 .addComponent(changeButton, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE))
                                                         .addGroup(jPanel1Layout.createSequentialGroup()
@@ -405,7 +412,7 @@ public class Gui extends JFrame {
                                                         .addComponent(fromLabel))
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(toField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(destField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(toLabel)))
                                         .addComponent(changeButton, GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
@@ -473,49 +480,65 @@ public class Gui extends JFrame {
 
         jSeparator4.setOrientation(SwingConstants.VERTICAL);
 
-        passengersLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        passengersLabel.setFont(font); // NOI18N
         passengersLabel.setText("Данные пассажиров:");
 
         passBox1.setSelected(true);
         passBox1.setEnabled(false);
 
-        surName1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        surName1.setFont(font); // NOI18N
         surName1.setText("Фамилия");
         surName1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Фамилия");
             }
         });
 
-        name1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        name1.setFont(font); // NOI18N
         name1.setText("Имя");
         name1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Имя");
             }
         });
 
         passBox2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passBox2ActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                controller.passengerEnabled(1, passBox2.isSelected());
             }
         });
 
-        surName2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        surName2.setFont(font); // NOI18N
         surName2.setText("Фамилия");
         surName2.setEnabled(false);
         surName2.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Фамилия");
             }
         });
 
-        name2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        name2.setFont(font); // NOI18N
         name2.setText("Имя");
         name2.setEnabled(false);
         name2.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Имя");
             }
         });
 
@@ -523,26 +546,34 @@ public class Gui extends JFrame {
         childBox2.setEnabled(false);
 
         passBox3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passBox3ActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                controller.passengerEnabled(2, passBox3.isSelected());
             }
         });
 
-        surName3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        surName3.setFont(font); // NOI18N
         surName3.setText("Фамилия");
         surName3.setEnabled(false);
         surName3.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Фамилия");
             }
         });
 
-        name3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        name3.setFont(font); // NOI18N
         name3.setText("Имя");
         name3.setEnabled(false);
         name3.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Имя");
             }
         });
 
@@ -550,26 +581,34 @@ public class Gui extends JFrame {
         childBox3.setEnabled(false);
 
         passBox4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passBox4ActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                controller.passengerEnabled(3, passBox4.isSelected());
             }
         });
 
-        surName4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        surName4.setFont(font); // NOI18N
         surName4.setText("Фамилия");
         surName4.setEnabled(false);
         surName4.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Фамилия");
             }
         });
 
-        name4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        name4.setFont(font); // NOI18N
         name4.setText("Имя");
         name4.setEnabled(false);
         name4.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Имя");
             }
         });
 
@@ -577,26 +616,34 @@ public class Gui extends JFrame {
         childBox4.setEnabled(false);
 
         passBox5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passBox5ActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                controller.passengerEnabled(4, passBox5.isSelected());
             }
         });
 
-        surName5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        surName5.setFont(font); // NOI18N
         surName5.setText("Фамилия");
         surName5.setEnabled(false);
         surName5.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Фамилия");
             }
         });
 
-        name5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        name5.setFont(font); // NOI18N
         name5.setText("Имя");
         name5.setEnabled(false);
         name5.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Имя");
             }
         });
 
@@ -604,26 +651,34 @@ public class Gui extends JFrame {
         childBox5.setEnabled(false);
 
         passBox6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passBox6ActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                controller.passengerEnabled(5, passBox6.isSelected());
             }
         });
 
-        surName6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        surName6.setFont(font); // NOI18N
         surName6.setText("Фамилия");
         surName6.setEnabled(false);
         surName6.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Фамилия");
             }
         });
 
-        name6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        name6.setFont(font); // NOI18N
         name6.setText("Имя");
         name6.setEnabled(false);
         name6.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+            public void focusGained(FocusEvent evt) {
                 fieldFocusGained(evt);
+            }
+
+            public void focusLost(FocusEvent evt) {
+                fieldFocusLost(evt, "Имя");
             }
         });
 
@@ -652,7 +707,7 @@ public class Gui extends JFrame {
         sameWagonBox.setToolTipText("");
         sameWagonBox.setEnabled(false);
         sameWagonBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(ActionEvent evt) {
                 sameWagonBoxActionPerformed(evt);
             }
         });
@@ -665,30 +720,30 @@ public class Gui extends JFrame {
         manualPlaceBox.setText("Задать места вручную");
         manualPlaceBox.setToolTipText("Будут заказаны только указанные места");
         manualPlaceBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                manualPlaceBoxActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                controller.manualPlacesSelected(manualPlaceBox.isSelected());
             }
         });
 
         placesLabel.setText("Место");
 
-        place1field.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        place1field.setEnabled(false);
+        placeField1.setFont(font); // NOI18N
+        placeField1.setEnabled(false);
 
-        place2field.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        place2field.setEnabled(false);
+        placefield2.setFont(font); // NOI18N
+        placefield2.setEnabled(false);
 
-        place3field.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        place3field.setEnabled(false);
+        placefield3.setFont(font); // NOI18N
+        placefield3.setEnabled(false);
 
-        place4field.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        place4field.setEnabled(false);
+        placefield4.setFont(font); // NOI18N
+        placefield4.setEnabled(false);
 
-        place5field.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        place5field.setEnabled(false);
+        placefield5.setFont(font); // NOI18N
+        placefield5.setEnabled(false);
 
-        place6field.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        place6field.setEnabled(false);
+        placefield6.setFont(font); // NOI18N
+        placefield6.setEnabled(false);
 
         childBox1.setText("Детский");
         childBox1.setEnabled(false);
@@ -700,8 +755,8 @@ public class Gui extends JFrame {
         buttonGroup3.add(wagonOnlyButton);
         wagonOnlyButton.setText("только:");
         wagonOnlyButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                wagonOnlyButtonActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                controller.wagonNumberSelected(true);
             }
         });
 
@@ -709,15 +764,15 @@ public class Gui extends JFrame {
         wagonAnyButton.setSelected(true);
         wagonAnyButton.setText("любой");
         wagonAnyButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                wagonAnyButtonActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                controller.wagonNumberSelected(false);
             }
         });
 
         wagonExceptBox.setText("кроме:");
         wagonExceptBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                wagonExceptBoxActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                controller.exceptWagonSelected(wagonExceptBox.isSelected());
             }
         });
 
@@ -823,12 +878,12 @@ public class Gui extends JFrame {
                                         .addComponent(name6, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(place5field, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
-                                        .addComponent(place6field)
-                                        .addComponent(place3field)
-                                        .addComponent(place2field)
-                                        .addComponent(place4field)
-                                        .addComponent(place1field, GroupLayout.Alignment.LEADING)))
+                                        .addComponent(placefield5, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                                        .addComponent(placefield6)
+                                        .addComponent(placefield3)
+                                        .addComponent(placefield2)
+                                        .addComponent(placefield4)
+                                        .addComponent(placeField1, GroupLayout.Alignment.LEADING)))
                         .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(passengersLabel)
@@ -849,7 +904,7 @@ public class Gui extends JFrame {
                                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                         .addComponent(surName1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(name1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(place1field, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+                                                        .addComponent(placeField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(lowSeatBox1)
@@ -860,7 +915,7 @@ public class Gui extends JFrame {
                                         .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                 .addComponent(surName2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(name2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(place2field, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(placefield2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(childBox2)
@@ -871,7 +926,7 @@ public class Gui extends JFrame {
                                         .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                 .addComponent(surName3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(name3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(place3field, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(placefield3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(childBox3)
@@ -881,7 +936,7 @@ public class Gui extends JFrame {
                                         .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                 .addComponent(surName4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(name4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(place4field, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(placefield4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                         .addComponent(passBox4, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -893,7 +948,7 @@ public class Gui extends JFrame {
                                         .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                 .addComponent(surName5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(name5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(place5field, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(placefield5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addComponent(childBox5, GroupLayout.Alignment.TRAILING)
@@ -903,7 +958,7 @@ public class Gui extends JFrame {
                                         .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                 .addComponent(surName6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(name6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(place6field, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(placefield6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                         .addComponent(passBox6))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -973,19 +1028,13 @@ public class Gui extends JFrame {
         trainNumberField.setEnabled(enabled);
     }
 
-    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        print(monthBox.getSelectedItem().toString());
-        monthBox.showPopup();
+    public void setStartButtonLabel(String label) {
+        startButton.setText(label);
     }
-
-    private void passBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passBox2ActionPerformed
-        enablePassenger(1);
-    }//GEN-LAST:event_passBox2ActionPerformed
-
-    private void changeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeButtonActionPerformed
+    public void changeDirection(ActionEvent evt) {//GEN-FIRST:event_changeButtonActionPerformed
         String buffer = fromField.getSelectedItem().toString();
-        fromField.setSelectedItem(toField.getSelectedItem().toString());
-        toField.setSelectedItem(buffer);
+        fromField.setSelectedItem(destField.getSelectedItem().toString());
+        destField.setSelectedItem(buffer);
     }//GEN-LAST:event_changeButtonActionPerformed
 
     public void print(String text) {
@@ -997,60 +1046,75 @@ public class Gui extends JFrame {
         print(text + "\n");
     }
 
-    private void passBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passBox3ActionPerformed
-        enablePassenger(2);
-    }//GEN-LAST:event_passBox3ActionPerformed
-
-    private void passBox5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passBox5ActionPerformed
-        enablePassenger(4);
-    }//GEN-LAST:event_passBox5ActionPerformed
-
-    private void passBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passBox4ActionPerformed
-        enablePassenger(3);
-    }//GEN-LAST:event_passBox4ActionPerformed
-
-    private void passBox6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passBox6ActionPerformed
-        enablePassenger(5);
-    }
+//
+//    private void passBox3ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_passBox3ActionPerformed
+//        enablePassenger(2);
+//    }//GEN-LAST:event_passBox3ActionPerformed
+//
+//    private void passBox5ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_passBox5ActionPerformed
+//        enablePassenger(4);
+//    }//GEN-LAST:event_passBox5ActionPerformed
+//
+//    private void passBox4ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_passBox4ActionPerformed
+//        enablePassenger(3);
+//    }//GEN-LAST:event_passBox4ActionPerformed
+//
+//    private void passBox6ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_passBox6ActionPerformed
+//        enablePassenger(5);
+//    }
+//
+//    private void passBox2ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_passBox2ActionPerformed
+//        enablePassenger(1);
+//    }//GEN-LAST:event_passBox2ActionPerformed
 
     public void setLateralDiscardBoxEnabled(boolean enable) {
         lateralDiscardBox.setEnabled(enable);
     }
 
-    private void luxButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_luxButtonActionPerformed
+    private void luxButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_luxButtonActionPerformed
         lateralDiscardBox.setEnabled(plazkartButton.isSelected());
     }//GEN-LAST:event_luxButtonActionPerformed
 
-    private void sameWagonBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sameWagonBoxActionPerformed
+    private void sameWagonBoxActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
-    }//GEN-LAST:event_sameWagonBoxActionPerformed
+    }
 
-    private void fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_fieldFocusGained
-        JTextField a = (JTextField) (evt.getSource());
-        a.selectAll();
-    }//GEN-LAST:event_fieldFocusGained
+    private void fieldFocusGained(FocusEvent evt) {
+        JTextField currentField = (JTextField) (evt.getSource());
+        String currentFieldText = currentField.getText();
+        if (currentFieldText.equals("Имя") || currentFieldText.equals("Фамилия")) {
+            currentField.setText("");
+        }
+    }
 
-    private void fromFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fromFieldActionPerformed
+    private void fieldFocusLost(FocusEvent evt, String defaultText) {
+        JTextField currentField = (JTextField) evt.getSource();
+        if (currentField.getText().isEmpty()) {
+            currentField.setText(defaultText);
+        }
+    }
+
+    private void fromFieldActionPerformed(ActionEvent evt) {//GEN-FIRST:event_fromFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_fromFieldActionPerformed
 
-    private void wagonOnlyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wagonOnlyButtonActionPerformed
+    private void wagonOnlyButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_wagonOnlyButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_wagonOnlyButtonActionPerformed
 
-    private void wagonAnyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wagonAnyButtonActionPerformed
+    private void wagonAnyButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_wagonAnyButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_wagonAnyButtonActionPerformed
 
-    private void wagonExceptBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wagonExceptBoxActionPerformed
+    private void wagonExceptBoxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_wagonExceptBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_wagonExceptBoxActionPerformed
 
-    private void manualPlaceBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manualPlaceBoxActionPerformed
+    private void manualPlaceBoxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_manualPlaceBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_manualPlaceBoxActionPerformed
 
-    private void toFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toFieldActionPerformed
+    private void toFieldActionPerformed(ActionEvent evt) {//GEN-FIRST:event_toFieldActionPerformed
         print("performed");
     }//GEN-LAST:event_toFieldActionPerformed
 
@@ -1058,18 +1122,18 @@ public class Gui extends JFrame {
         print("KeyReleased");
     }//GEN-LAST:event_toFieldKeyReleased
 
-    private void authorizeBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_authorizeBoxActionPerformed
+    private void authorizeBoxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_authorizeBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_authorizeBoxActionPerformed
 
-    private void anyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anyButtonActionPerformed
+    private void anyButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_anyButtonActionPerformed
         controller.wagonTypeSelected(evt.getSource().getClass().getSimpleName());
     }//GEN-LAST:event_anyButtonActionPerformed
 
     private void fromLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fromLabelMouseClicked
         fromField.removeAllItems();
         fromField.addItem("Харьков Пасс");
-        toField.transferFocus();
+        destField.transferFocus();
     }
 
     String getFromStation() {
@@ -1077,7 +1141,7 @@ public class Gui extends JFrame {
     }
 
     String getTillStation() {
-        return toField.getSelectedItem().toString();
+        return destField.getSelectedItem().toString();
     }
 
     int[] getDate() {
@@ -1100,7 +1164,7 @@ public class Gui extends JFrame {
 
     int getPassangerNumber() {
         int counter = 0;
-        for (JCheckBox box : passengerArray) {
+        for (JCheckBox box : passengerBoxes) {
             if (box.isSelected()) {
                 counter++;
             }
@@ -1116,12 +1180,12 @@ public class Gui extends JFrame {
         return Arrays.toString(passwordField.getPassword());
     }
 
-    private void enablePassenger(int num) {
-        boolean passSelected = passengerArray[num].isSelected();
-        surNameArray[num].setEnabled(passSelected);
-        nameArray[num].setEnabled(passSelected);
-        childBoxArray[num].setEnabled(passSelected);
-        lowSeatArray[num].setEnabled(passSelected);
+    public void enablePassenger(int num, boolean enable) {
+        surNameFields[num].setEnabled(enable);
+        nameFields[num].setEnabled(enable);
+        childBoxes[num].setEnabled(enable);
+        lowSeatBoxes[num].setEnabled(enable);
+        placeFields[num].setEnabled(enable && manualPlaceBox.isSelected());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1177,7 +1241,7 @@ public class Gui extends JFrame {
     protected JComboBox<String> monthBox;
     protected JTextField name1;
     protected JTextField name2;
-    protected JTextField name3;
+    private JTextField name3;
     protected JTextField name4;
     protected JTextField name5;
     protected JTextField name6;
@@ -1191,12 +1255,12 @@ public class Gui extends JFrame {
     private JLabel passengersLabel;
     private JPasswordField passwordField;
     private JLabel passwordLabel;
-    private JTextField place1field;
-    private JTextField place2field;
-    private JTextField place3field;
-    private JTextField place4field;
-    private JTextField place5field;
-    private JTextField place6field;
+    private JTextField placeField1;
+    private JTextField placefield2;
+    private JTextField placefield3;
+    private JTextField placefield4;
+    private JTextField placefield5;
+    private JTextField placefield6;
     private JLabel placesLabel;
     protected JRadioButton plazkartButton;
     private JCheckBox sameCupeButton;
@@ -1210,7 +1274,7 @@ public class Gui extends JFrame {
     protected JTextField surName5;
     protected JTextField surName6;
     private JComboBox<String> timeBox;
-    private JComboBox<String> toField;
+    private JComboBox<String> destField;
     private JLabel toLabel;
     protected JTextField trainNumberField;
     private JTextField usernameField;
@@ -1223,38 +1287,49 @@ public class Gui extends JFrame {
     private JLabel wagonTypeLabel;
     // End of variables declaration//GEN-END:variables
 //    private Drive drive;
-    private JCheckBox[] passengerArray;
-    JTextField[] surNameArray;
-    JTextField[] nameArray;
-    JCheckBox[] lowSeatArray;
-    JCheckBox[] childBoxArray;
-    JTextField[] groupArray;
+    private JCheckBox[] passengerBoxes;
+    JTextField[] surNameFields;
+    JTextField[] nameFields;
+    JCheckBox[] lowSeatBoxes;
+    JCheckBox[] childBoxes;
+    JTextField[] placeFields;
     private final Controller controller;
 
     private void initUserComponents() {
-        JCheckBox[] passengerArray = {passBox1, passBox2, passBox3, passBox4, passBox5, passBox6};
-        JCheckBox[] lowSeatArray = {lowSeatBox1, lowSeatBox2, lowSeatBox3, lowSeatBox4, lowSeatBox5, lowSeatBox6};
-        JCheckBox[] childBoxArray = {childBox1, childBox2, childBox3, childBox4, childBox5, childBox6};
-        JTextField[] surNameArray = {surName1, surName2, surName3, surName4, surName5, surName6};
-        JTextField[] nameArray = {name1, name2, name3, name4, name5, name6};
-        JTextField[] groupArray = {place1field, place2field, place3field, place4field, place5field, place6field};
-        this.passengerArray = passengerArray;
-        this.surNameArray = surNameArray;
-        this.nameArray = nameArray;
-        this.lowSeatArray = lowSeatArray;
-        this.childBoxArray = childBoxArray;
-        this.groupArray = groupArray;
-        toField.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+        passengerBoxes = new JCheckBox[] {passBox1, passBox2, passBox3, passBox4, passBox5, passBox6};
+        lowSeatBoxes = new JCheckBox[] {lowSeatBox1, lowSeatBox2, lowSeatBox3, lowSeatBox4, lowSeatBox5, lowSeatBox6};
+        childBoxes = new JCheckBox[] {childBox1, childBox2, childBox3, childBox4, childBox5, childBox6};
+        surNameFields = new JTextField[]{surName1, surName2, surName3, surName4, surName5, surName6};
+        nameFields = new JTextField[]{name1, name2, name3, name4, name5, name6};
+        placeFields = new JTextField[]{placeField1, placefield2, placefield3, placefield4, placefield5, placefield6};
+
+        destField.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 toFieldKeyReleased(evt);
             }
         });
     }
 
+    public void setWagonOnlyFieldEnabled(boolean enable){
+        wagonOnlyField.setEnabled(enable);
+        wagonExceptBox.setEnabled(!enable);
+        wagonExceptField.setEnabled(!enable&&wagonExceptBox.isSelected());
+    }
+
+    public void setWagonExceptFieldEnabled(boolean enable){
+        wagonExceptField.setEnabled(enable);
+    }
+
+    public void setPlacesEnabled(boolean enable) {
+        for (int i = 0; i < placeFields.length; i++) {
+            placeFields[i].setEnabled(enable && passengerBoxes[i].isSelected());
+        }
+    }
+
     int getOrderLowSeatNum(int start, int stop) {
         int counter = 0;
         for (int i = start; i < stop; i++) {
-            if (lowSeatArray[i].isSelected()) {
+            if (lowSeatBoxes[i].isSelected()) {
                 counter++;
             }
         }
