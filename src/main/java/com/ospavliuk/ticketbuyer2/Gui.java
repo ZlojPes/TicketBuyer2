@@ -228,7 +228,7 @@ public class Gui extends JFrame {
         fromField.setMinimumSize(new java.awt.Dimension(6, 23));
         fromField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                fromFieldActionPerformed(evt);
+
             }
         });
 
@@ -236,7 +236,7 @@ public class Gui extends JFrame {
         destField.setFont(font);
         destField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                controller.fromFieldTyping();
+                stationIsTyping(destField);
             }
         });
         destField.addItem("test");
@@ -245,7 +245,10 @@ public class Gui extends JFrame {
         destField.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                println(destField.getSelectedItem().toString());
+                Object s = destField.getSelectedItem();
+                if (s != null) {
+                    println(s.toString());
+                }
             }
         });
 
@@ -1020,7 +1023,6 @@ public class Gui extends JFrame {
                                         .addComponent(jSeparator4, GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
                                         .addContainerGap()))
         );
-
         pack();
     }
 
@@ -1031,6 +1033,7 @@ public class Gui extends JFrame {
     public void setStartButtonLabel(String label) {
         startButton.setText(label);
     }
+
     public void changeDirection(ActionEvent evt) {//GEN-FIRST:event_changeButtonActionPerformed
         String buffer = fromField.getSelectedItem().toString();
         fromField.setSelectedItem(destField.getSelectedItem().toString());
@@ -1045,27 +1048,6 @@ public class Gui extends JFrame {
     public void println(String text) {
         print(text + "\n");
     }
-
-//
-//    private void passBox3ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_passBox3ActionPerformed
-//        enablePassenger(2);
-//    }//GEN-LAST:event_passBox3ActionPerformed
-//
-//    private void passBox5ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_passBox5ActionPerformed
-//        enablePassenger(4);
-//    }//GEN-LAST:event_passBox5ActionPerformed
-//
-//    private void passBox4ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_passBox4ActionPerformed
-//        enablePassenger(3);
-//    }//GEN-LAST:event_passBox4ActionPerformed
-//
-//    private void passBox6ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_passBox6ActionPerformed
-//        enablePassenger(5);
-//    }
-//
-//    private void passBox2ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_passBox2ActionPerformed
-//        enablePassenger(1);
-//    }//GEN-LAST:event_passBox2ActionPerformed
 
     public void setLateralDiscardBoxEnabled(boolean enable) {
         lateralDiscardBox.setEnabled(enable);
@@ -1094,8 +1076,14 @@ public class Gui extends JFrame {
         }
     }
 
-    private void fromFieldActionPerformed(ActionEvent evt) {//GEN-FIRST:event_fromFieldActionPerformed
-        // TODO add your handling code here:
+    private void stationIsTyping(JComboBox<String> comboBox) {//GEN-FIRST:event_fromFieldActionPerformed
+        Object o = comboBox.getSelectedItem();
+        if (o != null) {
+            String s = String.valueOf(o);
+            if (s.length() >= 3) {
+                controller.findStation();
+            }
+        }
     }//GEN-LAST:event_fromFieldActionPerformed
 
     private void wagonOnlyButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_wagonOnlyButtonActionPerformed
@@ -1131,8 +1119,8 @@ public class Gui extends JFrame {
     }//GEN-LAST:event_anyButtonActionPerformed
 
     private void fromLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fromLabelMouseClicked
-        fromField.removeAllItems();
-        fromField.addItem("Харьков Пасс");
+        destField.removeAllItems();
+        destField.addItem("Харьков Пасс");
         destField.transferFocus();
     }
 
@@ -1296,9 +1284,9 @@ public class Gui extends JFrame {
     private final Controller controller;
 
     private void initUserComponents() {
-        passengerBoxes = new JCheckBox[] {passBox1, passBox2, passBox3, passBox4, passBox5, passBox6};
-        lowSeatBoxes = new JCheckBox[] {lowSeatBox1, lowSeatBox2, lowSeatBox3, lowSeatBox4, lowSeatBox5, lowSeatBox6};
-        childBoxes = new JCheckBox[] {childBox1, childBox2, childBox3, childBox4, childBox5, childBox6};
+        passengerBoxes = new JCheckBox[]{passBox1, passBox2, passBox3, passBox4, passBox5, passBox6};
+        lowSeatBoxes = new JCheckBox[]{lowSeatBox1, lowSeatBox2, lowSeatBox3, lowSeatBox4, lowSeatBox5, lowSeatBox6};
+        childBoxes = new JCheckBox[]{childBox1, childBox2, childBox3, childBox4, childBox5, childBox6};
         surNameFields = new JTextField[]{surName1, surName2, surName3, surName4, surName5, surName6};
         nameFields = new JTextField[]{name1, name2, name3, name4, name5, name6};
         placeFields = new JTextField[]{placeField1, placefield2, placefield3, placefield4, placefield5, placefield6};
@@ -1310,13 +1298,13 @@ public class Gui extends JFrame {
         });
     }
 
-    public void setWagonOnlyFieldEnabled(boolean enable){
+    public void setWagonOnlyFieldEnabled(boolean enable) {
         wagonOnlyField.setEnabled(enable);
         wagonExceptBox.setEnabled(!enable);
-        wagonExceptField.setEnabled(!enable&&wagonExceptBox.isSelected());
+        wagonExceptField.setEnabled(!enable && wagonExceptBox.isSelected());
     }
 
-    public void setWagonExceptFieldEnabled(boolean enable){
+    public void setWagonExceptFieldEnabled(boolean enable) {
         wagonExceptField.setEnabled(enable);
     }
 

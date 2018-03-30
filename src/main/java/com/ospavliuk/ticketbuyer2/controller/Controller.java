@@ -26,4 +26,6 @@ public interface Controller {
     void wagonNumberSelected(boolean selected);
 
     void exceptWagonSelected(boolean selected);
+
+    List<Station> findStation(String typedText);
 }

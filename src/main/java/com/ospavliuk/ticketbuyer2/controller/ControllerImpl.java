@@ -2,12 +2,10 @@ package com.ospavliuk.ticketbuyer2.controller;
 
 import com.ospavliuk.ticketbuyer2.Gui;
 
-import javax.swing.*;
-
 public class ControllerImpl implements Controller {
     private Gui gui;
 
-    ControllerImpl() {
+    private ControllerImpl() {
         gui = new Gui(this);
     }
 
@@ -79,5 +77,10 @@ public class ControllerImpl implements Controller {
     @Override
     public void exceptWagonSelected(boolean selected) {
         gui.setWagonExceptFieldEnabled(selected);
+    }
+
+    @Override
+    public List<Station> findStation(String typedText) {
+        return null;
     }
 }
