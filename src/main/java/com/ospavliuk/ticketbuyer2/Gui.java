@@ -128,7 +128,7 @@ public class Gui extends JFrame {
         wagonOnlyField = new JTextField();
         wagonExceptField = new JTextField();
         fullOrderBox = new JCheckBox();
-        sameCupeButton = new JCheckBox();
+        sameCupeBox = new JCheckBox();
         Font font = new java.awt.Font("Tahoma", Font.PLAIN, 14);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -256,6 +256,7 @@ public class Gui extends JFrame {
         plazkartButton.setText("Плацкарт");
         plazkartButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                enableLowPlaces();
                 controller.wagonTypeSelected("Плацкарт");
             }
         });
@@ -264,6 +265,7 @@ public class Gui extends JFrame {
         cupeButton.setText("Купе");
         cupeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                enableLowPlaces();
                 controller.wagonTypeSelected("Купе");
             }
         });
@@ -272,6 +274,7 @@ public class Gui extends JFrame {
         luxButton.setText("Люкс");
         luxButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                enableLowPlaces();
                 controller.wagonTypeSelected("Люкс");
             }
         });
@@ -280,6 +283,7 @@ public class Gui extends JFrame {
         c1Button.setText("С1");
         c1Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                enableLowPlaces();
                 controller.wagonTypeSelected("C1");
             }
         });
@@ -288,6 +292,7 @@ public class Gui extends JFrame {
         c2Button.setText("С2");
         c2Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                enableLowPlaces();
                 controller.wagonTypeSelected("C2");
             }
         });
@@ -296,6 +301,7 @@ public class Gui extends JFrame {
         anyButton.setText("Любой");
         anyButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                enableLowPlaces();
                 controller.wagonTypeSelected("Любой");
             }
         });
@@ -792,10 +798,10 @@ public class Gui extends JFrame {
         fullOrderBox.setActionCommand("");
         fullOrderBox.setEnabled(false);
 
-        sameCupeButton.setSelected(true);
-        sameCupeButton.setText("В одном купе");
-        sameCupeButton.setToolTipText("Для первых по списку");
-        sameCupeButton.setEnabled(false);
+        sameCupeBox.setSelected(true);
+        sameCupeBox.setText("В одном купе");
+        sameCupeBox.setToolTipText("Для первых по списку");
+        sameCupeBox.setEnabled(false);
 
         GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -829,7 +835,7 @@ public class Gui extends JFrame {
                                                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                                                                 .addGap(21, 21, 21)
-                                                                                .addComponent(sameCupeButton)
+                                                                                .addComponent(sameCupeBox)
                                                                                 .addGap(0, 0, Short.MAX_VALUE))
                                                                         .addComponent(sameWagonBox, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                         .addComponent(lateralDiscardBox, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -987,7 +993,7 @@ public class Gui extends JFrame {
                                                 .addGroup(GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                                                         .addComponent(sameWagonBox)
                                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(sameCupeButton)
+                                                        .addComponent(sameCupeBox)
                                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                         .addComponent(lateralDiscardBox)
                                                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1026,6 +1032,15 @@ public class Gui extends JFrame {
         pack();
     }
 
+    private void enableLowPlaces() {
+        boolean b = plazkartButton.isSelected() || cupeButton.isSelected() || anyButton.isSelected();
+        for (int i = 0; i < 6; i++) {
+            if(passengerBoxes[i].isSelected()){
+                lowSeatBoxes[i].setEnabled(b);
+            }
+        }
+    }
+
     public void setTrainNumberFieldEnabled(boolean enabled) {
         trainNumberField.setEnabled(enabled);
     }
@@ -1059,6 +1074,15 @@ public class Gui extends JFrame {
 
     private void sameWagonBoxActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
+    }
+
+    private boolean areSeveralPassenger() {
+        for (int i = 1; i < 6; i++) {
+            if (passengerBoxes[i].isSelected()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void fieldFocusGained(FocusEvent evt) {
@@ -1172,8 +1196,10 @@ public class Gui extends JFrame {
         surNameFields[num].setEnabled(enable);
         nameFields[num].setEnabled(enable);
         childBoxes[num].setEnabled(enable);
-        lowSeatBoxes[num].setEnabled(enable);
+        lowSeatBoxes[num].setEnabled(enable && plazkartButton.isSelected() || cupeButton.isSelected() || anyButton.isSelected());
         placeFields[num].setEnabled(enable && manualPlaceBox.isSelected());
+        sameWagonBox.setEnabled(areSeveralPassenger()&&wagonAnyButton.isSelected());
+        sameCupeBox.setEnabled(areSeveralPassenger()&&(luxButton.isSelected()|| plazkartButton.isSelected() || cupeButton.isSelected() || anyButton.isSelected()));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1251,7 +1277,7 @@ public class Gui extends JFrame {
     private JTextField placefield6;
     private JLabel placesLabel;
     protected JRadioButton plazkartButton;
-    private JCheckBox sameCupeButton;
+    private JCheckBox sameCupeBox;
     protected JCheckBox sameWagonBox;
     protected JRadioButton specifyTrainButton;
     private JButton startButton;
