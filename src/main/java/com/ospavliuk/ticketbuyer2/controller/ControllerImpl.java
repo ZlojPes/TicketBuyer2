@@ -2,6 +2,8 @@ package com.ospavliuk.ticketbuyer2.controller;
 
 import com.ospavliuk.ticketbuyer2.Gui;
 
+import java.util.List;
+
 public class ControllerImpl implements Controller {
     private Gui gui;
 
@@ -40,7 +42,9 @@ public class ControllerImpl implements Controller {
 
     @Override
     public void wagonTypeSelected(String button) {
-        gui.print(button);
+        if (button.equals("Плацкарт") || button.equals("Любой")) {
+
+        }
     }
 
     @Override

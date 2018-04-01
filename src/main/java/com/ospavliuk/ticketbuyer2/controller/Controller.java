@@ -1,6 +1,7 @@
 package com.ospavliuk.ticketbuyer2.controller;
 
 import javax.swing.*;
+import java.util.List;
 
 public interface Controller {
     void fromFieldTyping();
