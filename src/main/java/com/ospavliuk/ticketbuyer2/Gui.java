@@ -1081,7 +1081,7 @@ public class Gui extends JFrame {
         if (o != null) {
             String s = String.valueOf(o);
             if (s.length() >= 3) {
-                controller.findStation();
+                controller.findStation(s);
             }
         }
     }//GEN-LAST:event_fromFieldActionPerformed
