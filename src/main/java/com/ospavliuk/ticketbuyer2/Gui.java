@@ -1,6 +1,7 @@
 package com.ospavliuk.ticketbuyer2;
 
 import com.ospavliuk.ticketbuyer2.controller.Controller;
+import com.ospavliuk.ticketbuyer2.controller.Station;
 import com.ospavliuk.ticketbuyer2.controller.WagonType;
 
 import javax.swing.*;
@@ -240,9 +241,9 @@ public class Gui extends JFrame {
                 stationIsTyping(destField);
             }
         });
-        destField.addItem("test");
-        destField.addItem("test2");
-        destField.addItem("test3");
+//        destField.addItem("test");
+//        destField.addItem("test2");
+//        destField.addItem("test3");
         destField.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -1091,11 +1092,17 @@ public class Gui extends JFrame {
 
     private void stationIsTyping(JComboBox<String> comboBox) {//GEN-FIRST:event_fromFieldActionPerformed
         Object o = comboBox.getSelectedItem();
+        java.util.List<Station> highlights = null;
         if (o != null) {
             String s = String.valueOf(o);
             if (s.length() >= 3) {
-                controller.findStation(s);
+                highlights = controller.findStation(s);
             }
+        }
+        if(highlights!=null){
+            highlights.forEach(station -> {
+                comboBox.addItem(station.getName());
+            });
         }
     }
 

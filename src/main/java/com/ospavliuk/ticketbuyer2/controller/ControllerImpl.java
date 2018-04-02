@@ -5,10 +5,8 @@ import com.ospavliuk.ticketbuyer2.Gui;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class ControllerImpl implements Controller {
     private Gui gui;
@@ -17,8 +15,19 @@ public class ControllerImpl implements Controller {
 
     static {
         stations = new TreeSet<>(Comparator.comparing(Station::getName));
-        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("/src/main/resources/stations.ser"));) {
-            stations.addAll((Set<Station>) ois.readObject());
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("./src/main/resources/stations.ser"));) {
+            Object o = ois.readObject();
+            Set stationSet = null;
+            if (o instanceof Set) {
+                stationSet = (Set) o;
+            }
+            if (stationSet != null) {
+                for (Object s : stationSet) {
+                    if (s instanceof Station) {
+                        stations.add((Station) s);
+                    }
+                }
+            }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -30,6 +39,7 @@ public class ControllerImpl implements Controller {
 
     private ControllerImpl() {
         gui = new Gui(this);
+//        stations.forEach(System.out::println);
     }
 
     public static void main(String[] args) {
@@ -104,7 +114,8 @@ public class ControllerImpl implements Controller {
 
     @Override
     public List<Station> findStation(String typedText) {
-
-        return null;
+        List<Station> out = new ArrayList<>();
+        stations.stream().filter(station -> station.getName().startsWith(typedText)).forEach(out::add);
+        return out;
     }
 }
