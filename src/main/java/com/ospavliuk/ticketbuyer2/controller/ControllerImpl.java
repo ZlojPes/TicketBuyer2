@@ -2,11 +2,31 @@ package com.ospavliuk.ticketbuyer2.controller;
 
 import com.ospavliuk.ticketbuyer2.Gui;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class ControllerImpl implements Controller {
     private Gui gui;
     private WagonType wagonType;
+    private static final Set<Station> stations;
+
+    static {
+        stations = new TreeSet<>(Comparator.comparing(Station::getName));
+        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("/src/main/resources/stations.ser"));) {
+            stations.addAll((Set<Station>) ois.readObject());
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public WagonType getWagonType() {
+        return wagonType;
+    }
 
     private ControllerImpl() {
         gui = new Gui(this);
@@ -84,6 +104,7 @@ public class ControllerImpl implements Controller {
 
     @Override
     public List<Station> findStation(String typedText) {
+
         return null;
     }
 }
