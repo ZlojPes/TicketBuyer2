@@ -1,6 +1,7 @@
 package com.ospavliuk.ticketbuyer2;
 
 import com.ospavliuk.ticketbuyer2.controller.Controller;
+import com.ospavliuk.ticketbuyer2.controller.WagonType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,7 +48,7 @@ public class Gui extends JFrame {
         dateLabel = new JLabel();
         jSeparator2 = new JSeparator();
         numTrainLabel = new JLabel();
-        anyTrainButton = new JRadioButton();
+        anyTrainNumberButton = new JRadioButton();
         specifyTrainButton = new JRadioButton();
         trainNumberField = new JTextField();
         jSeparator3 = new JSeparator();
@@ -75,7 +76,7 @@ public class Gui extends JFrame {
         edgeButton = new JRadioButton();
         chromeButton = new JRadioButton();
         firefoxButton = new JRadioButton();
-        anyButton = new JRadioButton();
+        anyWagonTypeButton = new JRadioButton();
         jSeparator4 = new JSeparator();
         jPanel2 = new JPanel();
         passengersLabel = new JLabel();
@@ -123,7 +124,7 @@ public class Gui extends JFrame {
         jSeparator8 = new JSeparator();
         wagonNumLabel = new JLabel();
         wagonOnlyButton = new JRadioButton();
-        wagonAnyButton = new JRadioButton();
+        anyWagonNumberButton = new JRadioButton();
         wagonExceptBox = new JCheckBox();
         wagonOnlyField = new JTextField();
         wagonExceptField = new JTextField();
@@ -168,10 +169,10 @@ public class Gui extends JFrame {
         numTrainLabel.setFont(font); // NOI18N
         numTrainLabel.setText("Номер поезда:");
 
-        buttonGroup1.add(anyTrainButton);
-        anyTrainButton.setSelected(true);
-        anyTrainButton.setText("Любой");
-        anyTrainButton.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(anyTrainNumberButton);
+        anyTrainNumberButton.setSelected(true);
+        anyTrainNumberButton.setText("Любой");
+        anyTrainNumberButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 controller.trainNumberSelected("Любой");
             }
@@ -256,8 +257,7 @@ public class Gui extends JFrame {
         plazkartButton.setText("Плацкарт");
         plazkartButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                enableLowPlaces();
-                controller.wagonTypeSelected("Плацкарт");
+                wagonTypeChanged(WagonType.PLATZKART);
             }
         });
 
@@ -265,8 +265,7 @@ public class Gui extends JFrame {
         cupeButton.setText("Купе");
         cupeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                enableLowPlaces();
-                controller.wagonTypeSelected("Купе");
+                wagonTypeChanged(WagonType.KUPE);
             }
         });
 
@@ -274,8 +273,7 @@ public class Gui extends JFrame {
         luxButton.setText("Люкс");
         luxButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                enableLowPlaces();
-                controller.wagonTypeSelected("Люкс");
+                wagonTypeChanged(WagonType.LUX);
             }
         });
 
@@ -283,8 +281,7 @@ public class Gui extends JFrame {
         c1Button.setText("С1");
         c1Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                enableLowPlaces();
-                controller.wagonTypeSelected("C1");
+                wagonTypeChanged(WagonType.C1);
             }
         });
 
@@ -292,17 +289,15 @@ public class Gui extends JFrame {
         c2Button.setText("С2");
         c2Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                enableLowPlaces();
-                controller.wagonTypeSelected("C2");
+                wagonTypeChanged(WagonType.C2);
             }
         });
 
-        buttonGroup2.add(anyButton);
-        anyButton.setText("Любой");
-        anyButton.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup2.add(anyWagonTypeButton);
+        anyWagonTypeButton.setText("Любой");
+        anyWagonTypeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                enableLowPlaces();
-                controller.wagonTypeSelected("Любой");
+                wagonTypeChanged(WagonType.ANY_TYPE);
             }
         });
 
@@ -362,7 +357,7 @@ public class Gui extends JFrame {
                                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                                 .addComponent(numTrainLabel)
                                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                .addComponent(anyTrainButton)
+                                                                .addComponent(anyTrainNumberButton)
                                                                 .addGap(18, 18, 18)
                                                                 .addComponent(specifyTrainButton)
                                                                 .addGap(12, 12, 12)
@@ -397,7 +392,7 @@ public class Gui extends JFrame {
                                                                                         .addComponent(c2Button))
                                                                                 .addGap(36, 36, 36)
                                                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                                                        .addComponent(anyButton)
+                                                                                        .addComponent(anyWagonTypeButton)
                                                                                         .addComponent(luxButton)))
                                                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                                                 .addComponent(browserLabel)
@@ -438,7 +433,7 @@ public class Gui extends JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(specifyTrainButton)
                                         .addComponent(trainNumberField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(anyTrainButton)
+                                        .addComponent(anyTrainNumberButton)
                                         .addComponent(numTrainLabel))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jSeparator3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -454,7 +449,7 @@ public class Gui extends JFrame {
                                                 .addGap(7, 7, 7)
                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                         .addComponent(c2Button)
-                                                        .addComponent(anyButton)))
+                                                        .addComponent(anyWagonTypeButton)))
                                         .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(c1Button)))
@@ -630,7 +625,7 @@ public class Gui extends JFrame {
             }
         });
 
-        surName5.setFont(font); // NOI18N
+        surName5.setFont(font);
         surName5.setText("Фамилия");
         surName5.setEnabled(false);
         surName5.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -643,7 +638,7 @@ public class Gui extends JFrame {
             }
         });
 
-        name5.setFont(font); // NOI18N
+        name5.setFont(font);
         name5.setText("Имя");
         name5.setEnabled(false);
         name5.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -695,6 +690,7 @@ public class Gui extends JFrame {
         childBox6.setEnabled(false);
 
         lowSeatBox1.setText("Только нижнее");
+        lowSeatBox1.setEnabled(false);
 
         lowSeatBox2.setText("Только нижнее");
         lowSeatBox2.setEnabled(false);
@@ -713,11 +709,10 @@ public class Gui extends JFrame {
 
         sameWagonBox.setSelected(true);
         sameWagonBox.setText("только в одном вагоне ");
-        sameWagonBox.setToolTipText("");
         sameWagonBox.setEnabled(false);
         sameWagonBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                sameWagonBoxActionPerformed(evt);
+                sameCupeBox.setEnabled(sameWagonBox.isSelected() && areSeveralPassenger() && !(c1Button.isSelected() || c2Button.isSelected()));
             }
         });
 
@@ -769,10 +764,10 @@ public class Gui extends JFrame {
             }
         });
 
-        buttonGroup3.add(wagonAnyButton);
-        wagonAnyButton.setSelected(true);
-        wagonAnyButton.setText("любой");
-        wagonAnyButton.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup3.add(anyWagonNumberButton);
+        anyWagonNumberButton.setSelected(true);
+        anyWagonNumberButton.setText("любой");
+        anyWagonNumberButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 controller.wagonNumberSelected(false);
             }
@@ -851,7 +846,7 @@ public class Gui extends JFrame {
                                                                                 .addComponent(wagonOnlyField))
                                                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                                                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                                                        .addComponent(wagonAnyButton)
+                                                                                        .addComponent(anyWagonNumberButton)
                                                                                         .addComponent(wagonNumLabel, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE))
                                                                                 .addGap(0, 15, Short.MAX_VALUE))
                                                                         .addGroup(jPanel2Layout.createSequentialGroup()
@@ -984,7 +979,7 @@ public class Gui extends JFrame {
                                                         .addComponent(wagonOnlyButton)
                                                         .addComponent(wagonOnlyField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(wagonAnyButton)
+                                                .addComponent(anyWagonNumberButton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                         .addComponent(wagonExceptBox)
@@ -1032,11 +1027,17 @@ public class Gui extends JFrame {
         pack();
     }
 
+    private void wagonTypeChanged(WagonType type) {
+        enableLowPlaces();
+        sameCupeBox.setEnabled(sameWagonBox.isSelected() && areSeveralPassenger() && !(c1Button.isSelected() || c2Button.isSelected()));
+        controller.wagonTypeSelected(type);
+        lateralDiscardBox.setEnabled(plazkartButton.isSelected() || anyWagonTypeButton.isSelected());
+    }
+
     private void enableLowPlaces() {
-        boolean b = plazkartButton.isSelected() || cupeButton.isSelected() || anyButton.isSelected();
         for (int i = 0; i < 6; i++) {
-            if(passengerBoxes[i].isSelected()){
-                lowSeatBoxes[i].setEnabled(b);
+            if (passengerBoxes[i].isSelected()) {
+                lowSeatBoxes[i].setEnabled(plazkartButton.isSelected() || cupeButton.isSelected() || anyWagonTypeButton.isSelected());
             }
         }
     }
@@ -1062,18 +1063,6 @@ public class Gui extends JFrame {
 
     public void println(String text) {
         print(text + "\n");
-    }
-
-    public void setLateralDiscardBoxEnabled(boolean enable) {
-        lateralDiscardBox.setEnabled(enable);
-    }
-
-    private void luxButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_luxButtonActionPerformed
-        lateralDiscardBox.setEnabled(plazkartButton.isSelected());
-    }//GEN-LAST:event_luxButtonActionPerformed
-
-    private void sameWagonBoxActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
     }
 
     private boolean areSeveralPassenger() {
@@ -1108,39 +1097,11 @@ public class Gui extends JFrame {
                 controller.findStation(s);
             }
         }
-    }//GEN-LAST:event_fromFieldActionPerformed
-
-    private void wagonOnlyButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_wagonOnlyButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_wagonOnlyButtonActionPerformed
-
-    private void wagonAnyButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_wagonAnyButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_wagonAnyButtonActionPerformed
-
-    private void wagonExceptBoxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_wagonExceptBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_wagonExceptBoxActionPerformed
-
-    private void manualPlaceBoxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_manualPlaceBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_manualPlaceBoxActionPerformed
-
-    private void toFieldActionPerformed(ActionEvent evt) {//GEN-FIRST:event_toFieldActionPerformed
-        print("performed");
-    }//GEN-LAST:event_toFieldActionPerformed
+    }
 
     private void toFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_toFieldKeyReleased
         print("KeyReleased");
-    }//GEN-LAST:event_toFieldKeyReleased
-
-    private void authorizeBoxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_authorizeBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_authorizeBoxActionPerformed
-
-    private void anyButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_anyButtonActionPerformed
-        controller.wagonTypeSelected(evt.getSource().getClass().getSimpleName());
-    }//GEN-LAST:event_anyButtonActionPerformed
+    }
 
     private void fromLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fromLabelMouseClicked
         destField.removeAllItems();
@@ -1196,15 +1157,16 @@ public class Gui extends JFrame {
         surNameFields[num].setEnabled(enable);
         nameFields[num].setEnabled(enable);
         childBoxes[num].setEnabled(enable);
-        lowSeatBoxes[num].setEnabled(enable && plazkartButton.isSelected() || cupeButton.isSelected() || anyButton.isSelected());
+        lowSeatBoxes[num].setEnabled(enable && plazkartButton.isSelected() || cupeButton.isSelected() || anyWagonTypeButton.isSelected());
         placeFields[num].setEnabled(enable && manualPlaceBox.isSelected());
-        sameWagonBox.setEnabled(areSeveralPassenger()&&wagonAnyButton.isSelected());
-        sameCupeBox.setEnabled(areSeveralPassenger()&&(luxButton.isSelected()|| plazkartButton.isSelected() || cupeButton.isSelected() || anyButton.isSelected()));
+        sameWagonBox.setEnabled(areSeveralPassenger() && anyWagonNumberButton.isSelected());
+        sameCupeBox.setEnabled(areSeveralPassenger() && (luxButton.isSelected() || plazkartButton.isSelected() || cupeButton.isSelected() || anyWagonTypeButton.isSelected()));
+        fullOrderBox.setEnabled(areSeveralPassenger());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JRadioButton anyButton;
-    protected JRadioButton anyTrainButton;
+    private JRadioButton anyWagonTypeButton;
+    protected JRadioButton anyTrainNumberButton;
     JCheckBox authorizeBox;
     private JLabel browserLabel;
     private ButtonGroup buttonGroup1;
@@ -1292,7 +1254,7 @@ public class Gui extends JFrame {
     private JLabel toLabel;
     protected JTextField trainNumberField;
     private JTextField usernameField;
-    private JRadioButton wagonAnyButton;
+    private JRadioButton anyWagonNumberButton;
     private JCheckBox wagonExceptBox;
     private JTextField wagonExceptField;
     private JLabel wagonNumLabel;

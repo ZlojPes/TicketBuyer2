@@ -6,6 +6,7 @@ import java.util.List;
 
 public class ControllerImpl implements Controller {
     private Gui gui;
+    private WagonType wagonType;
 
     private ControllerImpl() {
         gui = new Gui(this);
@@ -41,10 +42,8 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public void wagonTypeSelected(String button) {
-        if (button.equals("Плацкарт") || button.equals("Любой")) {
-
-        }
+    public void wagonTypeSelected(WagonType wagonType) {
+        this.wagonType = wagonType;
     }
 
     @Override

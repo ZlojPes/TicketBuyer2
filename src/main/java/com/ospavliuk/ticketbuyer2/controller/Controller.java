@@ -1,6 +1,5 @@
 package com.ospavliuk.ticketbuyer2.controller;
 
-import javax.swing.*;
 import java.util.List;
 
 public interface Controller {
@@ -14,7 +13,7 @@ public interface Controller {
 
     void trainNumberSelected(String s);
 
-    void wagonTypeSelected(String button);
+    void wagonTypeSelected(WagonType button);
 
     void authSelected(boolean selected);
 
