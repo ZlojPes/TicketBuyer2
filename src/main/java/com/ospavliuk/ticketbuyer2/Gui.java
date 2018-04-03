@@ -238,19 +238,16 @@ public class Gui extends JFrame {
         destField.setFont(font);
 //        destField.addKeyListener(new java.awt.event.KeyAdapter() {
 //            public void keyReleased(java.awt.event.KeyEvent evt) {
-//                stationIsTyping(destField);
+//                System.out.println(evt.getKeyChar());
 //            }
 //        });
 //        destField.addItem("test");
 //        destField.addItem("test2");
 //        destField.addItem("test3");
-//        destField.addItemListener(new ItemListener() {
+//        destField.addActionListener(new ActionListener() {
 //            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                Object s = destField.getSelectedItem();
-//                if (s != null) {
-//                    println(s.toString());
-//                }
+//            public void actionPerformed(ActionEvent e) {
+//                System.out.println("ActionListener");
 //            }
 //        });
 
@@ -1091,36 +1088,41 @@ public class Gui extends JFrame {
     }
 
     private void stationIsTyping(JComboBox<String> comboBox) {
+        long start = System.currentTimeMillis();
+        if (start - lastTyping < 100) {
+            return;
+        }
+        lastTyping = start;
+        java.util.List<Station> highlights;
         Object o = comboBox.getEditor().getItem();
-        String text = null;
-        java.util.List<Station> highlights = null;
+        String text = "";
         if (o != null) {
             text = String.valueOf(o);
-            System.out.println(text);
-            if (text.length() >= 3) {
-                highlights = controller.findStation(text.toUpperCase());
-            }
         }
         comboBox.removeAllItems();
+        comboBox.hidePopup();
         comboBox.addItem(text);
-//        comboBox.setPopupVisible(true);
-        if (highlights != null && !highlights.isEmpty()) {
-//            System.out.println("highlights.size() " + highlights.size());
-            highlights.forEach(station -> {
-                String name = station.getName();
-                if (!comboBox.getItemAt(0).toString().equals(name)) {
+        if (text.length() >= 3) {
+            highlights = controller.findStation(text.toUpperCase());
+            if (highlights != null) {
+                highlights.forEach(station -> {
+                    if (station.getName().equals(comboBox.getItemAt(0))) {
+                        comboBox.removeAllItems();
+//                        comboBox.setForeground(Color.ORANGE);
+//                        comboBox.repaint();
+                    }
                     comboBox.addItem(station.getName());
-                    comboBox.setMaximumRowCount(20);
-                    comboBox.showPopup();
-//                    System.out.println(station);
-                }
-            });
+                });
+            }
+            if (comboBox.getItemAt(1) != null)
+                comboBox.showPopup();
         }
     }
 
+
     private void fromLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fromLabelMouseClicked
         destField.removeAllItems();
-        destField.addItem("Харьков Пасс");
+        destField.addItem("Харьков-Пасс");
         destField.transferFocus();
     }
 
@@ -1285,6 +1287,7 @@ public class Gui extends JFrame {
     JCheckBox[] childBoxes;
     JTextField[] placeFields;
     private final Controller controller;
+    private long lastTyping;
 
     private void initUserComponents() {
         passengerBoxes = new JCheckBox[]{passBox1, passBox2, passBox3, passBox4, passBox5, passBox6};
@@ -1304,6 +1307,8 @@ public class Gui extends JFrame {
                 stationIsTyping(fromField);
             }
         });
+        fromField.addItemListener(e -> stationIsTyping(fromField));
+        destField.addItemListener(e -> stationIsTyping(destField));
     }
 
     public void setWagonOnlyFieldEnabled(boolean enable) {
