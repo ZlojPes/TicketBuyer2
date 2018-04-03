@@ -144,6 +144,7 @@ public class Gui extends JFrame {
         fromLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 fromLabelMouseClicked(evt);
+                monthBox.showPopup();
             }
         });
 
@@ -163,7 +164,6 @@ public class Gui extends JFrame {
         dayBox.setModel(new DefaultComboBoxModel<>(new String[]{"---", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"}));
 
         monthBox.setModel(new DefaultComboBoxModel<>(new String[]{"---", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"}));
-
         dateLabel.setFont(font); // NOI18N
         dateLabel.setText("Отправление:");
 
@@ -236,23 +236,23 @@ public class Gui extends JFrame {
 
         destField.setEditable(true);
         destField.setFont(font);
-        destField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                stationIsTyping(destField);
-            }
-        });
+//        destField.addKeyListener(new java.awt.event.KeyAdapter() {
+//            public void keyReleased(java.awt.event.KeyEvent evt) {
+//                stationIsTyping(destField);
+//            }
+//        });
 //        destField.addItem("test");
 //        destField.addItem("test2");
 //        destField.addItem("test3");
-        destField.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                Object s = destField.getSelectedItem();
-                if (s != null) {
-                    println(s.toString());
-                }
-            }
-        });
+//        destField.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                Object s = destField.getSelectedItem();
+//                if (s != null) {
+//                    println(s.toString());
+//                }
+//            }
+//        });
 
         buttonGroup2.add(plazkartButton);
         plazkartButton.setText("Плацкарт");
@@ -1090,24 +1090,32 @@ public class Gui extends JFrame {
         }
     }
 
-    private void stationIsTyping(JComboBox<String> comboBox) {//GEN-FIRST:event_fromFieldActionPerformed
-        Object o = comboBox.getSelectedItem();
+    private void stationIsTyping(JComboBox<String> comboBox) {
+        Object o = comboBox.getEditor().getItem();
+        String text = null;
         java.util.List<Station> highlights = null;
         if (o != null) {
-            String s = String.valueOf(o);
-            if (s.length() >= 3) {
-                highlights = controller.findStation(s);
+            text = String.valueOf(o);
+            System.out.println(text);
+            if (text.length() >= 3) {
+                highlights = controller.findStation(text.toUpperCase());
             }
         }
-        if(highlights!=null){
+        comboBox.removeAllItems();
+        comboBox.addItem(text);
+//        comboBox.setPopupVisible(true);
+        if (highlights != null && !highlights.isEmpty()) {
+//            System.out.println("highlights.size() " + highlights.size());
             highlights.forEach(station -> {
-                comboBox.addItem(station.getName());
+                String name = station.getName();
+                if (!comboBox.getItemAt(0).toString().equals(name)) {
+                    comboBox.addItem(station.getName());
+                    comboBox.setMaximumRowCount(20);
+                    comboBox.showPopup();
+//                    System.out.println(station);
+                }
             });
         }
-    }
-
-    private void toFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_toFieldKeyReleased
-        print("KeyReleased");
     }
 
     private void fromLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fromLabelMouseClicked
@@ -1288,7 +1296,12 @@ public class Gui extends JFrame {
 
         destField.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                toFieldKeyReleased(evt);
+                stationIsTyping(destField);
+            }
+        });
+        fromField.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                stationIsTyping(fromField);
             }
         });
     }
