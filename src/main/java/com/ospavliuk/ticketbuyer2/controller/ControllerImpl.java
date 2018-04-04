@@ -12,6 +12,8 @@ public class ControllerImpl implements Controller {
     private Gui gui;
     private WagonType wagonType;
     private static final Set<Station> stations;
+    private int fromStation;
+    private int destStation;
 
     static {
         stations = new TreeSet<>(Comparator.comparing(Station::getName));
@@ -117,5 +119,17 @@ public class ControllerImpl implements Controller {
         List<Station> out = new ArrayList<>();
         stations.stream().filter(station -> station.getName().startsWith(typedText)).forEach(out::add);
         return out;
+    }
+
+    @Override
+    public void setStation(int stationId, boolean isStartStation) {
+        if (isStartStation){
+            fromStation = stationId;
+        }else {
+            destStation = stationId;
+        }
+        if (stationId==0){
+
+        }
     }
 }

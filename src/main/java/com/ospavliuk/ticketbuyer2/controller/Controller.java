@@ -28,4 +28,6 @@ public interface Controller {
     void exceptWagonSelected(boolean selected);
 
     List<Station> findStation(String typedText);
+
+    void setStation(int stationId, boolean isStartStation);
 }

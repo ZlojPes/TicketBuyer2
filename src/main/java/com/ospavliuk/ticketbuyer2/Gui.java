@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
+import java.util.Hashtable;
 
 public class Gui extends JFrame {
 
@@ -139,70 +140,55 @@ public class Gui extends JFrame {
         setLocationByPlatform(true);
         setResizable(false);
 
-        fromLabel.setFont(font); // NOI18N
+        fromLabel.setFont(font);
         fromLabel.setText("Откуда");
         fromLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                fromLabelMouseClicked(evt);
-                monthBox.showPopup();
+                fromField.removeAllItems();
+                fromField.getEditor().setItem("ХАРЬКОВ-ПАСС");
+                stationIsTyping(fromField);
             }
         });
 
-        toLabel.setFont(font); // NOI18N
+        toLabel.setFont(font);
         toLabel.setText("Куда");
 
-        changeButton.setFont(font); // NOI18N
-        changeButton.setText("Поменять");
+        changeButton.setFont(font);
+        changeButton.setText("поменять");
         changeButton.setEnabled(false);
         changeButton.setPreferredSize(new java.awt.Dimension(90, 25));
-        changeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.directionChanged();
-            }
-        });
+        changeButton.addActionListener(evt -> controller.directionChanged());
 
         dayBox.setModel(new DefaultComboBoxModel<>(new String[]{"---", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"}));
 
         monthBox.setModel(new DefaultComboBoxModel<>(new String[]{"---", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"}));
-        dateLabel.setFont(font); // NOI18N
+        dateLabel.setFont(font);
         dateLabel.setText("Отправление:");
 
-        numTrainLabel.setFont(font); // NOI18N
+        numTrainLabel.setFont(font);
         numTrainLabel.setText("Номер поезда:");
 
         buttonGroup1.add(anyTrainNumberButton);
         anyTrainNumberButton.setSelected(true);
         anyTrainNumberButton.setText("Любой");
-        anyTrainNumberButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.trainNumberSelected("Любой");
-            }
-        });
+        anyTrainNumberButton.addActionListener(evt -> controller.trainNumberSelected("Любой"));
 
         buttonGroup1.add(specifyTrainButton);
         specifyTrainButton.setText("Задать");
-        specifyTrainButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.trainNumberSelected("Задать");
-            }
-        });
+        specifyTrainButton.addActionListener(evt -> controller.trainNumberSelected("Задать"));
 
-        trainNumberField.setFont(new java.awt.Font("Tahoma", Font.BOLD | Font.ITALIC, 14)); // NOI18N
+        trainNumberField.setFont(new java.awt.Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
         trainNumberField.setForeground(new java.awt.Color(255, 0, 0));
         trainNumberField.setToolTipText("Номер поезда");
         trainNumberField.setEnabled(false);
 
-        wagonTypeLabel.setFont(font); // NOI18N
+        wagonTypeLabel.setFont(font);
         wagonTypeLabel.setText("Тип вагона:");
 
-        startButton.setFont(new java.awt.Font("Tahoma", Font.PLAIN, 18)); // NOI18N
+        startButton.setFont(new java.awt.Font("Tahoma", Font.PLAIN, 18));
         startButton.setText("СТАРТ");
         startButton.setEnabled(false);
-        startButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.startPressed(startButton.getText());
-            }
-        });
+        startButton.addActionListener(evt -> controller.startPressed(startButton.getText()));
 
         infoArea.setEditable(false);
         infoArea.setColumns(20);
@@ -211,11 +197,7 @@ public class Gui extends JFrame {
         jScrollPane1.setViewportView(infoArea);
 
         authorizeBox.setText("Аутентификация на uz.gov.ua");
-        authorizeBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.authSelected(authorizeBox.isSelected());
-            }
-        });
+        authorizeBox.addActionListener(evt -> controller.authSelected(authorizeBox.isSelected()));
 
         usernameField.setEnabled(false);
 
@@ -226,82 +208,39 @@ public class Gui extends JFrame {
         passwordField.setEnabled(false);
 
         fromField.setEditable(true);
-        fromField.setFont(font); // NOI18N
+        fromField.setFont(font);
         fromField.setMinimumSize(new java.awt.Dimension(6, 23));
-        fromField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-
-            }
-        });
 
         destField.setEditable(true);
         destField.setFont(font);
-//        destField.addKeyListener(new java.awt.event.KeyAdapter() {
-//            public void keyReleased(java.awt.event.KeyEvent evt) {
-//                System.out.println(evt.getKeyChar());
-//            }
-//        });
-//        destField.addItem("test");
-//        destField.addItem("test2");
-//        destField.addItem("test3");
-//        destField.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                System.out.println("ActionListener");
-//            }
-//        });
 
         buttonGroup2.add(plazkartButton);
         plazkartButton.setText("Плацкарт");
-        plazkartButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                wagonTypeChanged(WagonType.PLATZKART);
-            }
-        });
+        plazkartButton.addActionListener(evt -> wagonTypeChanged(WagonType.PLATZKART));
 
         buttonGroup2.add(cupeButton);
         cupeButton.setText("Купе");
-        cupeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                wagonTypeChanged(WagonType.KUPE);
-            }
-        });
+        cupeButton.addActionListener(evt -> wagonTypeChanged(WagonType.KUPE));
 
         buttonGroup2.add(luxButton);
         luxButton.setText("Люкс");
-        luxButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                wagonTypeChanged(WagonType.LUX);
-            }
-        });
+        luxButton.addActionListener(evt -> wagonTypeChanged(WagonType.LUX));
 
         buttonGroup2.add(c1Button);
         c1Button.setText("С1");
-        c1Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                wagonTypeChanged(WagonType.C1);
-            }
-        });
+        c1Button.addActionListener(evt -> wagonTypeChanged(WagonType.C1));
 
         buttonGroup2.add(c2Button);
         c2Button.setText("С2");
-        c2Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                wagonTypeChanged(WagonType.C2);
-            }
-        });
+        c2Button.addActionListener(evt -> wagonTypeChanged(WagonType.C2));
 
         buttonGroup2.add(anyWagonTypeButton);
         anyWagonTypeButton.setText("Любой");
-        anyWagonTypeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                wagonTypeChanged(WagonType.ANY_TYPE);
-            }
-        });
+        anyWagonTypeButton.addActionListener(evt -> wagonTypeChanged(WagonType.ANY_TYPE));
 
         timeBox.setModel(new DefaultComboBoxModel<>(new String[]{"00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"}));
 
-        browserLabel.setFont(font); // NOI18N
+        browserLabel.setFont(font);
         browserLabel.setText("Браузер:");
 
         buttonGroup4.add(edgeButton);
@@ -482,13 +421,13 @@ public class Gui extends JFrame {
 
         jSeparator4.setOrientation(SwingConstants.VERTICAL);
 
-        passengersLabel.setFont(font); // NOI18N
+        passengersLabel.setFont(font);
         passengersLabel.setText("Данные пассажиров:");
 
         passBox1.setSelected(true);
         passBox1.setEnabled(false);
 
-        surName1.setFont(font); // NOI18N
+        surName1.setFont(font);
         surName1.setText("Фамилия");
         surName1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(FocusEvent evt) {
@@ -500,7 +439,7 @@ public class Gui extends JFrame {
             }
         });
 
-        name1.setFont(font); // NOI18N
+        name1.setFont(font);
         name1.setText("Имя");
         name1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(FocusEvent evt) {
@@ -512,13 +451,9 @@ public class Gui extends JFrame {
             }
         });
 
-        passBox2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.passengerEnabled(1, passBox2.isSelected());
-            }
-        });
+        passBox2.addActionListener(evt -> controller.passengerEnabled(1, passBox2.isSelected()));
 
-        surName2.setFont(font); // NOI18N
+        surName2.setFont(font);
         surName2.setText("Фамилия");
         surName2.setEnabled(false);
         surName2.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -531,7 +466,7 @@ public class Gui extends JFrame {
             }
         });
 
-        name2.setFont(font); // NOI18N
+        name2.setFont(font);
         name2.setText("Имя");
         name2.setEnabled(false);
         name2.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -547,13 +482,9 @@ public class Gui extends JFrame {
         childBox2.setText("Детский");
         childBox2.setEnabled(false);
 
-        passBox3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.passengerEnabled(2, passBox3.isSelected());
-            }
-        });
+        passBox3.addActionListener(evt -> controller.passengerEnabled(2, passBox3.isSelected()));
 
-        surName3.setFont(font); // NOI18N
+        surName3.setFont(font);
         surName3.setText("Фамилия");
         surName3.setEnabled(false);
         surName3.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -566,7 +497,7 @@ public class Gui extends JFrame {
             }
         });
 
-        name3.setFont(font); // NOI18N
+        name3.setFont(font);
         name3.setText("Имя");
         name3.setEnabled(false);
         name3.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -582,13 +513,9 @@ public class Gui extends JFrame {
         childBox3.setText("Детский");
         childBox3.setEnabled(false);
 
-        passBox4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.passengerEnabled(3, passBox4.isSelected());
-            }
-        });
+        passBox4.addActionListener(evt -> controller.passengerEnabled(3, passBox4.isSelected()));
 
-        surName4.setFont(font); // NOI18N
+        surName4.setFont(font);
         surName4.setText("Фамилия");
         surName4.setEnabled(false);
         surName4.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -601,7 +528,7 @@ public class Gui extends JFrame {
             }
         });
 
-        name4.setFont(font); // NOI18N
+        name4.setFont(font);
         name4.setText("Имя");
         name4.setEnabled(false);
         name4.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -617,11 +544,7 @@ public class Gui extends JFrame {
         childBox4.setText("Детский");
         childBox4.setEnabled(false);
 
-        passBox5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.passengerEnabled(4, passBox5.isSelected());
-            }
-        });
+        passBox5.addActionListener(evt -> controller.passengerEnabled(4, passBox5.isSelected()));
 
         surName5.setFont(font);
         surName5.setText("Фамилия");
@@ -652,13 +575,9 @@ public class Gui extends JFrame {
         childBox5.setText("Детский");
         childBox5.setEnabled(false);
 
-        passBox6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.passengerEnabled(5, passBox6.isSelected());
-            }
-        });
+        passBox6.addActionListener(evt -> controller.passengerEnabled(5, passBox6.isSelected()));
 
-        surName6.setFont(font); // NOI18N
+        surName6.setFont(font);
         surName6.setText("Фамилия");
         surName6.setEnabled(false);
         surName6.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -671,7 +590,7 @@ public class Gui extends JFrame {
             }
         });
 
-        name6.setFont(font); // NOI18N
+        name6.setFont(font);
         name6.setText("Имя");
         name6.setEnabled(false);
         name6.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -708,11 +627,7 @@ public class Gui extends JFrame {
         sameWagonBox.setSelected(true);
         sameWagonBox.setText("только в одном вагоне ");
         sameWagonBox.setEnabled(false);
-        sameWagonBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                sameCupeBox.setEnabled(sameWagonBox.isSelected() && areSeveralPassenger() && !(c1Button.isSelected() || c2Button.isSelected()));
-            }
-        });
+        sameWagonBox.addActionListener(evt -> sameCupeBox.setEnabled(sameWagonBox.isSelected() && areSeveralPassenger() && !(c1Button.isSelected() || c2Button.isSelected())));
 
         lateralDiscardBox.setSelected(true);
         lateralDiscardBox.setText("запретить боковые");
@@ -721,31 +636,14 @@ public class Gui extends JFrame {
 
         manualPlaceBox.setText("Задать места вручную");
         manualPlaceBox.setToolTipText("Будут заказаны только указанные места");
-        manualPlaceBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.manualPlacesSelected(manualPlaceBox.isSelected());
-            }
-        });
+        manualPlaceBox.addActionListener(evt -> controller.manualPlacesSelected(manualPlaceBox.isSelected()));
 
         placesLabel.setText("Место");
 
-        placeField1.setFont(font); // NOI18N
-        placeField1.setEnabled(false);
-
-        placefield2.setFont(font); // NOI18N
-        placefield2.setEnabled(false);
-
-        placefield3.setFont(font); // NOI18N
-        placefield3.setEnabled(false);
-
-        placefield4.setFont(font); // NOI18N
-        placefield4.setEnabled(false);
-
-        placefield5.setFont(font); // NOI18N
-        placefield5.setEnabled(false);
-
-        placefield6.setFont(font); // NOI18N
-        placefield6.setEnabled(false);
+        for (JTextField tf : placeFields) {
+            tf.setFont(font);
+            tf.setEnabled(false);
+        }
 
         childBox1.setText("Детский");
         childBox1.setEnabled(false);
@@ -756,27 +654,15 @@ public class Gui extends JFrame {
 
         buttonGroup3.add(wagonOnlyButton);
         wagonOnlyButton.setText("только:");
-        wagonOnlyButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.wagonNumberSelected(true);
-            }
-        });
+        wagonOnlyButton.addActionListener(evt -> controller.wagonNumberSelected(true));
 
         buttonGroup3.add(anyWagonNumberButton);
         anyWagonNumberButton.setSelected(true);
         anyWagonNumberButton.setText("любой");
-        anyWagonNumberButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.wagonNumberSelected(false);
-            }
-        });
+        anyWagonNumberButton.addActionListener(evt -> controller.wagonNumberSelected(false));
 
         wagonExceptBox.setText("кроме:");
-        wagonExceptBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                controller.exceptWagonSelected(wagonExceptBox.isSelected());
-            }
-        });
+        wagonExceptBox.addActionListener(evt -> controller.exceptWagonSelected(wagonExceptBox.isSelected()));
 
         wagonOnlyField.setHorizontalAlignment(JTextField.RIGHT);
         wagonOnlyField.setEnabled(false);
@@ -1048,13 +934,13 @@ public class Gui extends JFrame {
         startButton.setText(label);
     }
 
-    public void changeDirection(ActionEvent evt) {//GEN-FIRST:event_changeButtonActionPerformed
+    public void changeDirection(ActionEvent evt) {
         String buffer = fromField.getSelectedItem().toString();
         fromField.setSelectedItem(destField.getSelectedItem().toString());
         destField.setSelectedItem(buffer);
-    }//GEN-LAST:event_changeButtonActionPerformed
+    }
 
-    public void print(String text) {
+    private void print(String text) {
         infoArea.setText(infoArea.getText() + text);
         infoArea.setCaretPosition(infoArea.getDocument().getLength());
     }
@@ -1102,28 +988,20 @@ public class Gui extends JFrame {
         comboBox.removeAllItems();
         comboBox.hidePopup();
         comboBox.addItem(text);
-        if (text.length() >= 3) {
-            highlights = controller.findStation(text.toUpperCase());
-            if (highlights != null) {
-                highlights.forEach(station -> {
-                    if (station.getName().equals(comboBox.getItemAt(0))) {
-                        comboBox.removeAllItems();
-//                        comboBox.setForeground(Color.ORANGE);
-//                        comboBox.repaint();
-                    }
-                    comboBox.addItem(station.getName());
-                });
-            }
-            if (comboBox.getItemAt(1) != null)
-                comboBox.showPopup();
+        if (text.length() < 3) {
+            return;
         }
-    }
-
-
-    private void fromLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fromLabelMouseClicked
-        destField.removeAllItems();
-        destField.addItem("Харьков-Пасс");
-        destField.transferFocus();
+        highlights = controller.findStation(text.toUpperCase());
+        highlights.forEach(station -> {
+            if (station.getName().equals(comboBox.getItemAt(0))) {
+                comboBox.removeItemAt(0);
+                controller.setStation(station.getId(), comboBox == fromField);
+            }
+            comboBox.addItem(station.getName());
+        });
+        if (comboBox.getItemAt(1) != null) {
+            comboBox.showPopup();
+        }
     }
 
     String getFromStation() {
@@ -1181,10 +1059,9 @@ public class Gui extends JFrame {
         fullOrderBox.setEnabled(areSeveralPassenger());
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private JRadioButton anyWagonTypeButton;
-    protected JRadioButton anyTrainNumberButton;
-    JCheckBox authorizeBox;
+    private JRadioButton anyTrainNumberButton;
+    private JCheckBox authorizeBox;
     private JLabel browserLabel;
     private ButtonGroup buttonGroup1;
     private ButtonGroup buttonGroup2;
@@ -1193,16 +1070,16 @@ public class Gui extends JFrame {
     private JRadioButton c1Button;
     private JRadioButton c2Button;
     private JButton changeButton;
-    protected JCheckBox childBox1;
-    protected JCheckBox childBox2;
-    protected JCheckBox childBox3;
-    protected JCheckBox childBox4;
-    protected JCheckBox childBox5;
-    protected JCheckBox childBox6;
+    private JCheckBox childBox1;
+    private JCheckBox childBox2;
+    private JCheckBox childBox3;
+    private JCheckBox childBox4;
+    private JCheckBox childBox5;
+    private JCheckBox childBox6;
     private JRadioButton chromeButton;
-    protected JRadioButton cupeButton;
+    private JRadioButton cupeButton;
     private JLabel dateLabel;
-    protected JComboBox<String> dayBox;
+    private JComboBox<String> dayBox;
     private JRadioButton edgeButton;
     private JRadioButton firefoxButton;
     private JComboBox<String> fromField;
@@ -1221,30 +1098,30 @@ public class Gui extends JFrame {
     private JSeparator jSeparator7;
     private JSeparator jSeparator8;
     private JSeparator jSeparator9;
-    protected JCheckBox lateralDiscardBox;
+    private JCheckBox lateralDiscardBox;
     private JLabel loginLabel;
-    protected JCheckBox lowSeatBox1;
-    protected JCheckBox lowSeatBox2;
-    protected JCheckBox lowSeatBox3;
-    protected JCheckBox lowSeatBox4;
-    protected JCheckBox lowSeatBox5;
-    protected JCheckBox lowSeatBox6;
-    protected JRadioButton luxButton;
+    private JCheckBox lowSeatBox1;
+    private JCheckBox lowSeatBox2;
+    private JCheckBox lowSeatBox3;
+    private JCheckBox lowSeatBox4;
+    private JCheckBox lowSeatBox5;
+    private JCheckBox lowSeatBox6;
+    private JRadioButton luxButton;
     private JCheckBox manualPlaceBox;
-    protected JComboBox<String> monthBox;
-    protected JTextField name1;
-    protected JTextField name2;
+    private JComboBox<String> monthBox;
+    private JTextField name1;
+    private JTextField name2;
     private JTextField name3;
-    protected JTextField name4;
-    protected JTextField name5;
-    protected JTextField name6;
+    private JTextField name4;
+    private JTextField name5;
+    private JTextField name6;
     private JLabel numTrainLabel;
     private JCheckBox passBox1;
-    protected JCheckBox passBox2;
-    protected JCheckBox passBox3;
-    protected JCheckBox passBox4;
-    protected JCheckBox passBox5;
-    protected JCheckBox passBox6;
+    private JCheckBox passBox2;
+    private JCheckBox passBox3;
+    private JCheckBox passBox4;
+    private JCheckBox passBox5;
+    private JCheckBox passBox6;
     private JLabel passengersLabel;
     private JPasswordField passwordField;
     private JLabel passwordLabel;
@@ -1255,21 +1132,21 @@ public class Gui extends JFrame {
     private JTextField placefield5;
     private JTextField placefield6;
     private JLabel placesLabel;
-    protected JRadioButton plazkartButton;
+    private JRadioButton plazkartButton;
     private JCheckBox sameCupeBox;
-    protected JCheckBox sameWagonBox;
-    protected JRadioButton specifyTrainButton;
+    private JCheckBox sameWagonBox;
+    private JRadioButton specifyTrainButton;
     private JButton startButton;
-    protected JTextField surName1;
-    protected JTextField surName2;
-    protected JTextField surName3;
-    protected JTextField surName4;
-    protected JTextField surName5;
-    protected JTextField surName6;
+    private JTextField surName1;
+    private JTextField surName2;
+    private JTextField surName3;
+    private JTextField surName4;
+    private JTextField surName5;
+    private JTextField surName6;
     private JComboBox<String> timeBox;
     private JComboBox<String> destField;
     private JLabel toLabel;
-    protected JTextField trainNumberField;
+    private JTextField trainNumberField;
     private JTextField usernameField;
     private JRadioButton anyWagonNumberButton;
     private JCheckBox wagonExceptBox;
@@ -1278,16 +1155,15 @@ public class Gui extends JFrame {
     private JRadioButton wagonOnlyButton;
     private JTextField wagonOnlyField;
     private JLabel wagonTypeLabel;
-    // End of variables declaration//GEN-END:variables
-//    private Drive drive;
     private JCheckBox[] passengerBoxes;
-    JTextField[] surNameFields;
-    JTextField[] nameFields;
-    JCheckBox[] lowSeatBoxes;
-    JCheckBox[] childBoxes;
-    JTextField[] placeFields;
+    private JTextField[] surNameFields;
+    private JTextField[] nameFields;
+    private JCheckBox[] lowSeatBoxes;
+    private JCheckBox[] childBoxes;
+    private JTextField[] placeFields;
     private final Controller controller;
     private long lastTyping;
+    private Hashtable<Integer, Color> table;
 
     private void initUserComponents() {
         passengerBoxes = new JCheckBox[]{passBox1, passBox2, passBox3, passBox4, passBox5, passBox6};
@@ -1296,6 +1172,17 @@ public class Gui extends JFrame {
         surNameFields = new JTextField[]{surName1, surName2, surName3, surName4, surName5, surName6};
         nameFields = new JTextField[]{name1, name2, name3, name4, name5, name6};
         placeFields = new JTextField[]{placeField1, placefield2, placefield3, placefield4, placefield5, placefield6};
+        table = new Hashtable<Integer, Color>();
+        table.put(0, Color.MAGENTA);
+        table.put(1, Color.RED);
+        table.put(2, Color.BLUE);
+        table.put(3, Color.GREEN);
+        table.put(4, Color.GRAY);
+        table.put(5, Color.ORANGE);
+        table.put(6, Color.CYAN);
+        fromField.setRenderer(new MyListCellRenderer(table));
+        destField.setRenderer(new MyListCellRenderer(table));
+
 
         destField.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -1340,5 +1227,25 @@ public class Gui extends JFrame {
     public void setAuthFieldsSelected(boolean enabled) {
         usernameField.setEnabled(enabled);
         passwordField.setEnabled(enabled);
+    }
+
+    class MyListCellRenderer extends DefaultListCellRenderer {
+        Hashtable<Integer, Color> table;
+
+        MyListCellRenderer(Hashtable<Integer, Color> table) {
+            this.table = table;
+            setOpaque(true);
+        }
+
+        public Component getListCellRendererComponent(JList jc, Object val, int idx,
+                                                      boolean isSelected, boolean cellHasFocus) {
+            setText(val.toString());
+            setForeground(table.get(idx));
+            if (isSelected)
+                setBackground(Color.LIGHT_GRAY);
+            else
+                setBackground(Color.WHITE);
+            return this;
+        }
     }
 }
