@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Gui extends JFrame {
 
@@ -42,7 +43,7 @@ public class Gui extends JFrame {
         buttonGroup4 = new ButtonGroup();
         jPanel1 = new JPanel();
         fromLabel = new JLabel();
-        toLabel = new JLabel();
+        destLabel = new JLabel();
         jSeparator1 = new JSeparator();
         changeButton = new JButton();
         dayBox = new JComboBox<>();
@@ -122,6 +123,7 @@ public class Gui extends JFrame {
         placefield4 = new JTextField();
         placefield5 = new JTextField();
         placefield6 = new JTextField();
+        placeFields = new JTextField[]{placeField1, placefield2, placefield3, placefield4, placefield5, placefield6};
         childBox1 = new JCheckBox();
         jSeparator8 = new JSeparator();
         wagonNumLabel = new JLabel();
@@ -141,6 +143,7 @@ public class Gui extends JFrame {
         setResizable(false);
 
         fromLabel.setFont(font);
+        fromLabel.setForeground(Color.RED);
         fromLabel.setText("Откуда");
         fromLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -150,8 +153,9 @@ public class Gui extends JFrame {
             }
         });
 
-        toLabel.setFont(font);
-        toLabel.setText("Куда");
+        destLabel.setFont(font);
+        destLabel.setForeground(Color.RED);
+        destLabel.setText("Куда");
 
         changeButton.setFont(font);
         changeButton.setText("поменять");
@@ -284,7 +288,7 @@ public class Gui extends JFrame {
                                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                                         .addComponent(fromLabel)
-                                                                        .addComponent(toLabel, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE))
+                                                                        .addComponent(destLabel, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE))
                                                                 .addGap(18, 18, 18)
                                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                                         .addComponent(fromField, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -354,7 +358,7 @@ public class Gui extends JFrame {
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                         .addComponent(destField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(toLabel)))
+                                                        .addComponent(destLabel)))
                                         .addComponent(changeButton, GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 2, GroupLayout.PREFERRED_SIZE)
@@ -934,10 +938,16 @@ public class Gui extends JFrame {
         startButton.setText(label);
     }
 
-    public void changeDirection(ActionEvent evt) {
-        String buffer = fromField.getSelectedItem().toString();
-        fromField.setSelectedItem(destField.getSelectedItem().toString());
-        destField.setSelectedItem(buffer);
+    public void setChangeButtonEnabled(boolean enable) {
+        changeButton.setEnabled(enable);
+    }
+
+    public void changeDirection() {
+        String buffer = (String) fromField.getSelectedItem();
+        fromField.setSelectedItem(destField.getSelectedItem());
+        stationIsTyping(fromField);
+        destField.getEditor().setItem((buffer));
+        stationIsTyping(destField);
     }
 
     private void print(String text) {
@@ -985,9 +995,11 @@ public class Gui extends JFrame {
         if (o != null) {
             text = String.valueOf(o);
         }
+        AtomicBoolean successFlag = new AtomicBoolean(false);
         comboBox.removeAllItems();
         comboBox.hidePopup();
         comboBox.addItem(text);
+        controller.setStation(0, comboBox == fromField);
         if (text.length() < 3) {
             return;
         }
@@ -996,6 +1008,7 @@ public class Gui extends JFrame {
             if (station.getName().equals(comboBox.getItemAt(0))) {
                 comboBox.removeItemAt(0);
                 controller.setStation(station.getId(), comboBox == fromField);
+                successFlag.set(true);
             }
             comboBox.addItem(station.getName());
         });
@@ -1004,33 +1017,7 @@ public class Gui extends JFrame {
         }
     }
 
-    String getFromStation() {
-        return fromField.getSelectedItem().toString();
-    }
-
-    String getTillStation() {
-        return destField.getSelectedItem().toString();
-    }
-
-    int[] getDate() {
-        return new int[]{dayBox.getSelectedIndex(), monthBox.getSelectedIndex()};
-    }
-
-    String getTrainNumberField() {
-        return trainNumberField.getText();
-    }
-
-    String getWagonType() {
-        if (plazkartButton.isSelected()) {
-            return "Плацкарт";
-        } else if (cupeButton.isSelected()) {
-            return "Купе";
-        } else {
-            return "Люкс";
-        }
-    }
-
-    int getPassangerNumber() {
+    int getPassengerNumber() {
         int counter = 0;
         for (JCheckBox box : passengerBoxes) {
             if (box.isSelected()) {
@@ -1145,7 +1132,7 @@ public class Gui extends JFrame {
     private JTextField surName6;
     private JComboBox<String> timeBox;
     private JComboBox<String> destField;
-    private JLabel toLabel;
+    private JLabel destLabel;
     private JTextField trainNumberField;
     private JTextField usernameField;
     private JRadioButton anyWagonNumberButton;
@@ -1171,7 +1158,6 @@ public class Gui extends JFrame {
         childBoxes = new JCheckBox[]{childBox1, childBox2, childBox3, childBox4, childBox5, childBox6};
         surNameFields = new JTextField[]{surName1, surName2, surName3, surName4, surName5, surName6};
         nameFields = new JTextField[]{name1, name2, name3, name4, name5, name6};
-        placeFields = new JTextField[]{placeField1, placefield2, placefield3, placefield4, placefield5, placefield6};
         table = new Hashtable<Integer, Color>();
         table.put(0, Color.MAGENTA);
         table.put(1, Color.RED);
@@ -1229,6 +1215,11 @@ public class Gui extends JFrame {
         passwordField.setEnabled(enabled);
     }
 
+    public void setStationColor(boolean isStartStation, Color color) {
+        JLabel label = isStartStation ? fromLabel : destLabel;
+        label.setForeground(color);
+    }
+
     class MyListCellRenderer extends DefaultListCellRenderer {
         Hashtable<Integer, Color> table;
 
@@ -1237,8 +1228,7 @@ public class Gui extends JFrame {
             setOpaque(true);
         }
 
-        public Component getListCellRendererComponent(JList jc, Object val, int idx,
-                                                      boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList jc, Object val, int idx, boolean isSelected, boolean cellHasFocus) {
             setText(val.toString());
             setForeground(table.get(idx));
             if (isSelected)

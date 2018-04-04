@@ -2,10 +2,12 @@ package com.ospavliuk.ticketbuyer2.controller;
 
 import com.ospavliuk.ticketbuyer2.Gui;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class ControllerImpl implements Controller {
@@ -60,7 +62,8 @@ public class ControllerImpl implements Controller {
 
     @Override
     public void directionChanged() {
-
+        gui.changeDirection();
+        System.out.println(fromStation + " ; " + destStation);
     }
 
     @Override
@@ -123,13 +126,13 @@ public class ControllerImpl implements Controller {
 
     @Override
     public void setStation(int stationId, boolean isStartStation) {
-        if (isStartStation){
+        if (isStartStation) {
             fromStation = stationId;
-        }else {
+        } else {
             destStation = stationId;
         }
-        if (stationId==0){
-
-        }
+        Color color = stationId == 0 ? Color.RED : Color.GREEN.darker();
+        gui.setStationColor(isStartStation, color);
+        gui.setChangeButtonEnabled(fromStation != 0 && destStation != 0);
     }
 }
