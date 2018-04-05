@@ -3,17 +3,13 @@ package com.ospavliuk.ticketbuyer2.controller;
 import java.util.List;
 
 public interface Controller {
-    void fromFieldTyping();
-
-    void destFieldTyping();
-
     void directionChanged();
 
     void dateChanged();
 
     void trainNumberSelected(String s);
 
-    void wagonTypeSelected(WagonType button);
+    void setWagonType(WagonType button);
 
     void authSelected(boolean selected);
 
@@ -27,7 +23,7 @@ public interface Controller {
 
     void exceptWagonSelected(boolean selected);
 
-    List<Station> findStation(String typedText);
+    List<String> findStation(String typedText);
 
-    void setStation(int stationId, boolean isStartStation);
+    boolean tryToSetStation(String name, boolean isStartStation);
 }

@@ -1,7 +1,6 @@
 package com.ospavliuk.ticketbuyer2;
 
 import com.ospavliuk.ticketbuyer2.controller.Controller;
-import com.ospavliuk.ticketbuyer2.controller.Station;
 import com.ospavliuk.ticketbuyer2.controller.WagonType;
 
 import javax.swing.*;
@@ -9,7 +8,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Gui extends JFrame {
 
@@ -156,6 +154,11 @@ public class Gui extends JFrame {
         destLabel.setFont(font);
         destLabel.setForeground(Color.RED);
         destLabel.setText("Куда");
+//        destLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+//            public void mouseClicked(java.awt.event.MouseEvent evt) {
+//
+//            }
+//        });
 
         changeButton.setFont(font);
         changeButton.setText("поменять");
@@ -918,7 +921,7 @@ public class Gui extends JFrame {
     private void wagonTypeChanged(WagonType type) {
         enableLowPlaces();
         sameCupeBox.setEnabled(sameWagonBox.isSelected() && areSeveralPassenger() && !(c1Button.isSelected() || c2Button.isSelected()));
-        controller.wagonTypeSelected(type);
+        controller.setWagonType(type);
         lateralDiscardBox.setEnabled(plazkartButton.isSelected() || anyWagonTypeButton.isSelected());
     }
 
@@ -944,9 +947,9 @@ public class Gui extends JFrame {
 
     public void changeDirection() {
         String buffer = (String) fromField.getSelectedItem();
-        fromField.setSelectedItem(destField.getSelectedItem());
+        fromField.getEditor().setItem(destField.getSelectedItem());
         stationIsTyping(fromField);
-        destField.getEditor().setItem((buffer));
+        destField.getEditor().setItem(buffer);
         stationIsTyping(destField);
     }
 
@@ -984,34 +987,25 @@ public class Gui extends JFrame {
     }
 
     private void stationIsTyping(JComboBox<String> comboBox) {
-        long start = System.currentTimeMillis();
-        if (start - lastTyping < 100) {
-            return;
-        }
-        lastTyping = start;
-        java.util.List<Station> highlights;
+        java.util.List<String> highlights;
         Object o = comboBox.getEditor().getItem();
         String text = "";
         if (o != null) {
             text = String.valueOf(o);
         }
-        AtomicBoolean successFlag = new AtomicBoolean(false);
         comboBox.removeAllItems();
         comboBox.hidePopup();
         comboBox.addItem(text);
-        controller.setStation(0, comboBox == fromField);
         if (text.length() < 3) {
             return;
         }
         highlights = controller.findStation(text.toUpperCase());
-        highlights.forEach(station -> {
-            if (station.getName().equals(comboBox.getItemAt(0))) {
+        for (String station : highlights) {
+            if (station.equals(comboBox.getItemAt(0))) {
                 comboBox.removeItemAt(0);
-                controller.setStation(station.getId(), comboBox == fromField);
-                successFlag.set(true);
             }
-            comboBox.addItem(station.getName());
-        });
+            comboBox.addItem(station);
+        }
         if (comboBox.getItemAt(1) != null) {
             comboBox.showPopup();
         }
@@ -1044,6 +1038,89 @@ public class Gui extends JFrame {
         sameWagonBox.setEnabled(areSeveralPassenger() && anyWagonNumberButton.isSelected());
         sameCupeBox.setEnabled(areSeveralPassenger() && (luxButton.isSelected() || plazkartButton.isSelected() || cupeButton.isSelected() || anyWagonTypeButton.isSelected()));
         fullOrderBox.setEnabled(areSeveralPassenger());
+    }
+
+    private void initUserComponents() {
+        passengerBoxes = new JCheckBox[]{passBox1, passBox2, passBox3, passBox4, passBox5, passBox6};
+        lowSeatBoxes = new JCheckBox[]{lowSeatBox1, lowSeatBox2, lowSeatBox3, lowSeatBox4, lowSeatBox5, lowSeatBox6};
+        childBoxes = new JCheckBox[]{childBox1, childBox2, childBox3, childBox4, childBox5, childBox6};
+        surNameFields = new JTextField[]{surName1, surName2, surName3, surName4, surName5, surName6};
+        nameFields = new JTextField[]{name1, name2, name3, name4, name5, name6};
+        table = new Hashtable<Integer, Color>();
+        table.put(0, Color.MAGENTA);
+        table.put(1, Color.RED);
+        table.put(2, Color.BLUE);
+        table.put(3, Color.GREEN);
+        table.put(4, Color.GRAY);
+        table.put(5, Color.ORANGE);
+        table.put(6, Color.CYAN);
+        fromField.setRenderer(new MyListCellRenderer(table));
+        destField.setRenderer(new MyListCellRenderer(table));
+
+
+        destField.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                stationIsTyping(destField);
+            }
+        });
+        fromField.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                stationIsTyping(fromField);
+            }
+        });
+        fromField.addItemListener(e -> {
+            boolean realStation = controller.tryToSetStation(String.valueOf(fromField.getSelectedItem()), true);
+            setStationColor(true, realStation ? Color.GREEN.darker() : Color.RED);
+        });
+        destField.addItemListener(e -> {
+            boolean realStation = controller.tryToSetStation(String.valueOf(destField.getSelectedItem()), false);
+            setStationColor(false, realStation ? Color.GREEN.darker() : Color.RED);
+        });
+    }
+
+    public void setWagonOnlyFieldEnabled(boolean enable) {
+        wagonOnlyField.setEnabled(enable);
+        wagonExceptBox.setEnabled(!enable);
+        wagonExceptField.setEnabled(!enable && wagonExceptBox.isSelected());
+    }
+
+    public void setWagonExceptFieldEnabled(boolean enable) {
+        wagonExceptField.setEnabled(enable);
+    }
+
+    public void setPlacesEnabled(boolean enable) {
+        for (int i = 0; i < placeFields.length; i++) {
+            placeFields[i].setEnabled(enable && passengerBoxes[i].isSelected());
+        }
+    }
+
+    public void setAuthFieldsSelected(boolean enabled) {
+        usernameField.setEnabled(enabled);
+        passwordField.setEnabled(enabled);
+    }
+
+    public void setStationColor(boolean isStartStation, Color color) {
+        JLabel label = isStartStation ? fromLabel : destLabel;
+        label.setForeground(color);
+    }
+
+    class MyListCellRenderer extends DefaultListCellRenderer {
+        Hashtable<Integer, Color> table;
+
+        MyListCellRenderer(Hashtable<Integer, Color> table) {
+            this.table = table;
+            setOpaque(true);
+        }
+
+        public Component getListCellRendererComponent(JList jc, Object val, int idx, boolean isSelected, boolean cellHasFocus) {
+            setText(val.toString());
+            setForeground(table.get(idx));
+            if (isSelected)
+                setBackground(Color.LIGHT_GRAY);
+            else
+                setBackground(Color.WHITE);
+            return this;
+        }
     }
 
     private JRadioButton anyWagonTypeButton;
@@ -1149,93 +1226,5 @@ public class Gui extends JFrame {
     private JCheckBox[] childBoxes;
     private JTextField[] placeFields;
     private final Controller controller;
-    private long lastTyping;
     private Hashtable<Integer, Color> table;
-
-    private void initUserComponents() {
-        passengerBoxes = new JCheckBox[]{passBox1, passBox2, passBox3, passBox4, passBox5, passBox6};
-        lowSeatBoxes = new JCheckBox[]{lowSeatBox1, lowSeatBox2, lowSeatBox3, lowSeatBox4, lowSeatBox5, lowSeatBox6};
-        childBoxes = new JCheckBox[]{childBox1, childBox2, childBox3, childBox4, childBox5, childBox6};
-        surNameFields = new JTextField[]{surName1, surName2, surName3, surName4, surName5, surName6};
-        nameFields = new JTextField[]{name1, name2, name3, name4, name5, name6};
-        table = new Hashtable<Integer, Color>();
-        table.put(0, Color.MAGENTA);
-        table.put(1, Color.RED);
-        table.put(2, Color.BLUE);
-        table.put(3, Color.GREEN);
-        table.put(4, Color.GRAY);
-        table.put(5, Color.ORANGE);
-        table.put(6, Color.CYAN);
-        fromField.setRenderer(new MyListCellRenderer(table));
-        destField.setRenderer(new MyListCellRenderer(table));
-
-
-        destField.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                stationIsTyping(destField);
-            }
-        });
-        fromField.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                stationIsTyping(fromField);
-            }
-        });
-        fromField.addItemListener(e -> stationIsTyping(fromField));
-        destField.addItemListener(e -> stationIsTyping(destField));
-    }
-
-    public void setWagonOnlyFieldEnabled(boolean enable) {
-        wagonOnlyField.setEnabled(enable);
-        wagonExceptBox.setEnabled(!enable);
-        wagonExceptField.setEnabled(!enable && wagonExceptBox.isSelected());
-    }
-
-    public void setWagonExceptFieldEnabled(boolean enable) {
-        wagonExceptField.setEnabled(enable);
-    }
-
-    public void setPlacesEnabled(boolean enable) {
-        for (int i = 0; i < placeFields.length; i++) {
-            placeFields[i].setEnabled(enable && passengerBoxes[i].isSelected());
-        }
-    }
-
-    int getOrderLowSeatNum(int start, int stop) {
-        int counter = 0;
-        for (int i = start; i < stop; i++) {
-            if (lowSeatBoxes[i].isSelected()) {
-                counter++;
-            }
-        }
-        return counter;
-    }
-
-    public void setAuthFieldsSelected(boolean enabled) {
-        usernameField.setEnabled(enabled);
-        passwordField.setEnabled(enabled);
-    }
-
-    public void setStationColor(boolean isStartStation, Color color) {
-        JLabel label = isStartStation ? fromLabel : destLabel;
-        label.setForeground(color);
-    }
-
-    class MyListCellRenderer extends DefaultListCellRenderer {
-        Hashtable<Integer, Color> table;
-
-        MyListCellRenderer(Hashtable<Integer, Color> table) {
-            this.table = table;
-            setOpaque(true);
-        }
-
-        public Component getListCellRendererComponent(JList jc, Object val, int idx, boolean isSelected, boolean cellHasFocus) {
-            setText(val.toString());
-            setForeground(table.get(idx));
-            if (isSelected)
-                setBackground(Color.LIGHT_GRAY);
-            else
-                setBackground(Color.WHITE);
-            return this;
-        }
-    }
 }

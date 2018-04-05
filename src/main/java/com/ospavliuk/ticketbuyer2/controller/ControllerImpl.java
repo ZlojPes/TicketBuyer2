@@ -2,13 +2,11 @@ package com.ospavliuk.ticketbuyer2.controller;
 
 import com.ospavliuk.ticketbuyer2.Gui;
 
-import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.*;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ControllerImpl implements Controller {
     private Gui gui;
@@ -19,7 +17,7 @@ public class ControllerImpl implements Controller {
 
     static {
         stations = new TreeSet<>(Comparator.comparing(Station::getName));
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("./src/main/resources/stations.ser"));) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("./src/main/resources/stations.ser"))) {
             Object o = ois.readObject();
             Set stationSet = null;
             if (o instanceof Set) {
@@ -37,13 +35,8 @@ public class ControllerImpl implements Controller {
         }
     }
 
-    public WagonType getWagonType() {
-        return wagonType;
-    }
-
     private ControllerImpl() {
         gui = new Gui(this);
-//        stations.forEach(System.out::println);
     }
 
     public static void main(String[] args) {
@@ -51,19 +44,8 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public void fromFieldTyping() {
-
-    }
-
-    @Override
-    public void destFieldTyping() {
-
-    }
-
-    @Override
     public void directionChanged() {
         gui.changeDirection();
-        System.out.println(fromStation + " ; " + destStation);
     }
 
     @Override
@@ -77,7 +59,7 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public void wagonTypeSelected(WagonType wagonType) {
+    public void setWagonType(WagonType wagonType) {
         this.wagonType = wagonType;
     }
 
@@ -118,21 +100,34 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public List<Station> findStation(String typedText) {
-        List<Station> out = new ArrayList<>();
-        stations.stream().filter(station -> station.getName().startsWith(typedText)).forEach(out::add);
+    public List<String> findStation(String typedText) {
+        List<String> out = new ArrayList<>();
+        stations.stream().
+                filter(station -> station.
+                        getName().
+                        startsWith(typedText)).
+                forEach(station -> out.add(station.getName()));
         return out;
     }
 
     @Override
-    public void setStation(int stationId, boolean isStartStation) {
-        if (isStartStation) {
-            fromStation = stationId;
-        } else {
-            destStation = stationId;
+    public boolean tryToSetStation(String name, boolean isStartStation) {
+        for (Station station : stations) {
+            if (station.getName().equals(name)) {
+                if (isStartStation) {
+                    fromStation = station.getId();
+                } else {
+                    destStation = station.getId();
+                }
+                gui.setChangeButtonEnabled(fromStation != 0 && destStation != 0);
+                return true;
+            }
         }
-        Color color = stationId == 0 ? Color.RED : Color.GREEN.darker();
-        gui.setStationColor(isStartStation, color);
-        gui.setChangeButtonEnabled(fromStation != 0 && destStation != 0);
+        gui.setChangeButtonEnabled(false);
+        return false;
     }
+
+//    public WagonType getWagonType() {
+//        return wagonType;
+//    }
 }
