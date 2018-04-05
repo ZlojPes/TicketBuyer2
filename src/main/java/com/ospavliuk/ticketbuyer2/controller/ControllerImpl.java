@@ -12,8 +12,9 @@ public class ControllerImpl implements Controller {
     private Gui gui;
     private WagonType wagonType;
     private static final Set<Station> stations;
-    private int fromStation;
-    private int destStation;
+    private int startStation, destStation;
+    private int day, month, year;
+    private String time;
 
     static {
         stations = new TreeSet<>(Comparator.comparing(Station::getName));
@@ -49,8 +50,16 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public void dateChanged() {
-
+    public boolean setDate(int day, int month, int year, String time) {
+        if (day == 0 || month == 0) {
+            return false;
+        }
+        this.day = day;
+        this.month = month;
+        this.year = year;
+        this.time = time;
+        System.out.println(this.day + "-" + this.month + "-" + this.year + "-" + this.time);
+        return true;
     }
 
     @Override
@@ -115,11 +124,11 @@ public class ControllerImpl implements Controller {
         for (Station station : stations) {
             if (station.getName().equals(name)) {
                 if (isStartStation) {
-                    fromStation = station.getId();
+                    startStation = station.getId();
                 } else {
                     destStation = station.getId();
                 }
-                gui.setChangeButtonEnabled(fromStation != 0 && destStation != 0);
+                gui.setChangeButtonEnabled(startStation != 0 && destStation != 0);
                 return true;
             }
         }

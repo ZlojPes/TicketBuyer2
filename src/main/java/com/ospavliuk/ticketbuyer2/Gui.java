@@ -6,8 +6,7 @@ import com.ospavliuk.ticketbuyer2.controller.WagonType;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.*;
 
 public class Gui extends JFrame {
 
@@ -40,7 +39,7 @@ public class Gui extends JFrame {
         buttonGroup3 = new ButtonGroup();
         buttonGroup4 = new ButtonGroup();
         jPanel1 = new JPanel();
-        fromLabel = new JLabel();
+        startLabel = new JLabel();
         destLabel = new JLabel();
         jSeparator1 = new JSeparator();
         changeButton = new JButton();
@@ -67,7 +66,7 @@ public class Gui extends JFrame {
         loginLabel = new JLabel();
         passwordLabel = new JLabel();
         passwordField = new JPasswordField();
-        fromField = new JComboBox<>();
+        startField = new JComboBox<>();
         destField = new JComboBox<>();
         c1Button = new JRadioButton();
         c2Button = new JRadioButton();
@@ -133,6 +132,18 @@ public class Gui extends JFrame {
         fullOrderBox = new JCheckBox();
         sameCupeBox = new JCheckBox();
         Font font = new java.awt.Font("Tahoma", Font.PLAIN, 14);
+        _28daysModel = new DefaultComboBoxModel<>(new String[]{"---", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27",
+                "28"});
+        _29daysModel = new DefaultComboBoxModel<>(new String[]{"---", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27",
+                "28", "29"});
+        _30daysModel = new DefaultComboBoxModel<>(new String[]{"---", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27",
+                "28", "29", "30"});
+        _31daysModel = new DefaultComboBoxModel<>(new String[]{"---", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27",
+                "28", "29", "30", "31"});
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ticket Buyer 2.0 by Alexander Pavliuk");
@@ -140,25 +151,26 @@ public class Gui extends JFrame {
         setLocationByPlatform(true);
         setResizable(false);
 
-        fromLabel.setFont(font);
-        fromLabel.setForeground(Color.RED);
-        fromLabel.setText("Откуда");
-        fromLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+        startLabel.setFont(font);
+        startLabel.setForeground(Color.RED);
+        startLabel.setText("Откуда");
+        startLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                fromField.removeAllItems();
-                fromField.getEditor().setItem("ХАРЬКОВ-ПАСС");
-                stationIsTyping(fromField);
+                startField.removeAllItems();
+                startField.getEditor().setItem("ХАРЬКОВ-ПАСС");
+                stationIsTyping(startField);
             }
         });
 
         destLabel.setFont(font);
         destLabel.setForeground(Color.RED);
         destLabel.setText("Куда");
-//        destLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-//            public void mouseClicked(java.awt.event.MouseEvent evt) {
-//
-//            }
-//        });
+        destLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
+
+            }
+        });
 
         changeButton.setFont(font);
         changeButton.setText("поменять");
@@ -166,10 +178,42 @@ public class Gui extends JFrame {
         changeButton.setPreferredSize(new java.awt.Dimension(90, 25));
         changeButton.addActionListener(evt -> controller.directionChanged());
 
-        dayBox.setModel(new DefaultComboBoxModel<>(new String[]{"---", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"}));
+        dayBox.setModel(_31daysModel);
+        dayBox.addItemListener(evt -> setDate());
 
-        monthBox.setModel(new DefaultComboBoxModel<>(new String[]{"---", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"}));
+        monthBox.setModel(new DefaultComboBoxModel<>(new String[]{"---", "Январь", "Февраль", "Март", "Апрель", "Май",
+                "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"}));
+        monthBox.addItemListener(evt -> {
+            int month = monthBox.getSelectedIndex();
+            int day = dayBox.getSelectedIndex();
+            if (month == 4 || month == 6 || month == 9 || month == 11) {
+                dayBox.setModel(_30daysModel);
+                if (day > 30) {
+                    day = 0;
+                }
+            } else if (month == 2) {
+                if (((GregorianCalendar) Calendar.getInstance()).isLeapYear(Calendar.getInstance().get(Calendar.YEAR) - 1900)) {
+                    dayBox.setModel(_29daysModel);
+                    if (day > 29) {
+                        day = 0;
+                    }
+                } else {
+                    dayBox.setModel(_28daysModel);
+                    if (day > 28) {
+                        day = 0;
+                    }
+                }
+            } else {
+                dayBox.setModel(_31daysModel);
+            }
+            dateLabel.setForeground(Color.RED);
+            dayBox.setSelectedIndex(day);
+            if (day > 0 && month > 0) {
+                setDate();
+            }
+        });
         dateLabel.setFont(font);
+        dateLabel.setForeground(Color.RED);
         dateLabel.setText("Отправление:");
 
         numTrainLabel.setFont(font);
@@ -214,9 +258,9 @@ public class Gui extends JFrame {
 
         passwordField.setEnabled(false);
 
-        fromField.setEditable(true);
-        fromField.setFont(font);
-        fromField.setMinimumSize(new java.awt.Dimension(6, 23));
+        startField.setEditable(true);
+        startField.setFont(font);
+        startField.setMinimumSize(new java.awt.Dimension(6, 23));
 
         destField.setEditable(true);
         destField.setFont(font);
@@ -290,11 +334,11 @@ public class Gui extends JFrame {
                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                                        .addComponent(fromLabel)
+                                                                        .addComponent(startLabel)
                                                                         .addComponent(destLabel, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE))
                                                                 .addGap(18, 18, 18)
                                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                                        .addComponent(fromField, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                        .addComponent(startField, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                         .addComponent(destField, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                                                 .addGap(18, 18, 18)
                                                                 .addComponent(changeButton, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE))
@@ -356,8 +400,8 @@ public class Gui extends JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(fromField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(fromLabel))
+                                                        .addComponent(startField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(startLabel))
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                         .addComponent(destField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -918,6 +962,18 @@ public class Gui extends JFrame {
         pack();
     }
 
+    private void setDate() {
+        int setMonth = monthBox.getSelectedIndex();
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        boolean success = controller.setDate(
+                dayBox.getSelectedIndex(),
+                setMonth,
+                setMonth > currentMonth ? currentYear : currentYear + 1,
+                String.valueOf(timeBox.getSelectedItem()));
+        dateLabel.setForeground(success ? Color.GREEN.darker() : Color.RED);
+    }
+
     private void wagonTypeChanged(WagonType type) {
         enableLowPlaces();
         sameCupeBox.setEnabled(sameWagonBox.isSelected() && areSeveralPassenger() && !(c1Button.isSelected() || c2Button.isSelected()));
@@ -946,9 +1002,9 @@ public class Gui extends JFrame {
     }
 
     public void changeDirection() {
-        String buffer = (String) fromField.getSelectedItem();
-        fromField.getEditor().setItem(destField.getSelectedItem());
-        stationIsTyping(fromField);
+        String buffer = (String) startField.getSelectedItem();
+        startField.getEditor().setItem(destField.getSelectedItem());
+        stationIsTyping(startField);
         destField.getEditor().setItem(buffer);
         stationIsTyping(destField);
     }
@@ -1054,7 +1110,7 @@ public class Gui extends JFrame {
         table.put(4, Color.GRAY);
         table.put(5, Color.ORANGE);
         table.put(6, Color.CYAN);
-        fromField.setRenderer(new MyListCellRenderer(table));
+        startField.setRenderer(new MyListCellRenderer(table));
         destField.setRenderer(new MyListCellRenderer(table));
 
 
@@ -1063,13 +1119,13 @@ public class Gui extends JFrame {
                 stationIsTyping(destField);
             }
         });
-        fromField.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
+        startField.getEditor().getEditorComponent().addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                stationIsTyping(fromField);
+                stationIsTyping(startField);
             }
         });
-        fromField.addItemListener(e -> {
-            boolean realStation = controller.tryToSetStation(String.valueOf(fromField.getSelectedItem()), true);
+        startField.addItemListener(e -> {
+            boolean realStation = controller.tryToSetStation(String.valueOf(startField.getSelectedItem()), true);
             setStationColor(true, realStation ? Color.GREEN.darker() : Color.RED);
         });
         destField.addItemListener(e -> {
@@ -1100,7 +1156,7 @@ public class Gui extends JFrame {
     }
 
     public void setStationColor(boolean isStartStation, Color color) {
-        JLabel label = isStartStation ? fromLabel : destLabel;
+        JLabel label = isStartStation ? startLabel : destLabel;
         label.setForeground(color);
     }
 
@@ -1146,8 +1202,8 @@ public class Gui extends JFrame {
     private JComboBox<String> dayBox;
     private JRadioButton edgeButton;
     private JRadioButton firefoxButton;
-    private JComboBox<String> fromField;
-    private JLabel fromLabel;
+    private JComboBox<String> startField;
+    private JLabel startLabel;
     private JCheckBox fullOrderBox;
     private JTextArea infoArea;
     private JPanel jPanel1;
@@ -1227,4 +1283,8 @@ public class Gui extends JFrame {
     private JTextField[] placeFields;
     private final Controller controller;
     private Hashtable<Integer, Color> table;
+    private DefaultComboBoxModel<String> _28daysModel;
+    private DefaultComboBoxModel<String> _29daysModel;
+    private DefaultComboBoxModel<String> _30daysModel;
+    private DefaultComboBoxModel<String> _31daysModel;
 }

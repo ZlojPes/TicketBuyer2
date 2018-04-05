@@ -5,7 +5,7 @@ import java.util.List;
 public interface Controller {
     void directionChanged();
 
-    void dateChanged();
+    boolean setDate(int day, int month, int year, String time);
 
     void trainNumberSelected(String s);
 
