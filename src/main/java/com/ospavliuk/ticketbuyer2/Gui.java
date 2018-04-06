@@ -6,6 +6,8 @@ import com.ospavliuk.ticketbuyer2.controller.WagonType;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 public class Gui extends JFrame {
@@ -165,10 +167,11 @@ public class Gui extends JFrame {
         destLabel.setFont(font);
         destLabel.setForeground(Color.RED);
         destLabel.setText("Куда");
-        destLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+        dateLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
-
+                LocalDate ld = LocalDate.from(new Date().toInstant().atZone(ZoneId.of("UTC"))).plusDays(44);
+                monthBox.setSelectedIndex(ld.getMonthValue());
+                dayBox.setSelectedIndex(ld.getDayOfMonth());
             }
         });
 
@@ -179,11 +182,20 @@ public class Gui extends JFrame {
         changeButton.addActionListener(evt -> controller.directionChanged());
 
         dayBox.setModel(_31daysModel);
-        dayBox.addItemListener(evt -> setDate());
+        dayBox.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                return;
+            }
+            setDate();
+        });
 
         monthBox.setModel(new DefaultComboBoxModel<>(new String[]{"---", "Январь", "Февраль", "Март", "Апрель", "Май",
                 "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"}));
         monthBox.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.DESELECTED) {
+                return;
+            }
+            Calendar calendar = Calendar.getInstance();
             int month = monthBox.getSelectedIndex();
             int day = dayBox.getSelectedIndex();
             if (month == 4 || month == 6 || month == 9 || month == 11) {
@@ -192,7 +204,7 @@ public class Gui extends JFrame {
                     day = 0;
                 }
             } else if (month == 2) {
-                if (((GregorianCalendar) Calendar.getInstance()).isLeapYear(Calendar.getInstance().get(Calendar.YEAR) - 1900)) {
+                if (((GregorianCalendar) calendar).isLeapYear(calendar.get(Calendar.YEAR) - 1900)) {
                     dayBox.setModel(_29daysModel);
                     if (day > 29) {
                         day = 0;
@@ -234,6 +246,7 @@ public class Gui extends JFrame {
         trainNumberField.setEnabled(false);
 
         wagonTypeLabel.setFont(font);
+        wagonTypeLabel.setForeground(Color.RED);
         wagonTypeLabel.setText("Тип вагона:");
 
         startButton.setFont(new java.awt.Font("Tahoma", Font.PLAIN, 18));
@@ -289,7 +302,14 @@ public class Gui extends JFrame {
         anyWagonTypeButton.setText("Любой");
         anyWagonTypeButton.addActionListener(evt -> wagonTypeChanged(WagonType.ANY_TYPE));
 
-        timeBox.setModel(new DefaultComboBoxModel<>(new String[]{"00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"}));
+        timeBox.setModel(new DefaultComboBoxModel<>(new String[]{"00:00", "01:00", "02:00", "03:00", "04:00", "05:00",
+                "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00",
+                "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"}));
+        timeBox.addItemListener(evt -> {
+            if (evt.getStateChange() == ItemEvent.SELECTED && dayBox.getSelectedIndex() != 0 && monthBox.getSelectedIndex() != 0) {
+                setDate();
+            }
+        });
 
         browserLabel.setFont(font);
         browserLabel.setText("Браузер:");
@@ -975,6 +995,7 @@ public class Gui extends JFrame {
     }
 
     private void wagonTypeChanged(WagonType type) {
+        wagonTypeLabel.setForeground(Color.GREEN.darker());
         enableLowPlaces();
         sameCupeBox.setEnabled(sameWagonBox.isSelected() && areSeveralPassenger() && !(c1Button.isSelected() || c2Button.isSelected()));
         controller.setWagonType(type);

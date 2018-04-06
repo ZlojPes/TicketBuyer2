@@ -58,7 +58,6 @@ public class ControllerImpl implements Controller {
         this.month = month;
         this.year = year;
         this.time = time;
-        System.out.println(this.day + "-" + this.month + "-" + this.year + "-" + this.time);
         return true;
     }
 
