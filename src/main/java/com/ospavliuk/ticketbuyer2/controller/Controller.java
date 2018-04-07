@@ -26,4 +26,6 @@ public interface Controller {
     List<String> findStation(String typedText);
 
     boolean tryToSetStation(String name, boolean isStartStation);
+
+    boolean checkAvailability();
 }

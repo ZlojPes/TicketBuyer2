@@ -1,6 +1,7 @@
 package com.ospavliuk.ticketbuyer2.controller;
 
 import com.ospavliuk.ticketbuyer2.Gui;
+import com.ospavliuk.ticketbuyer2.model.Model;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,11 +11,13 @@ import java.util.List;
 
 public class ControllerImpl implements Controller {
     private Gui gui;
+    private Model model;
     private WagonType wagonType;
     private static final Set<Station> stations;
     private int startStation, destStation;
     private int day, month, year;
     private String time;
+    private boolean isRunning;
 
     static {
         stations = new TreeSet<>(Comparator.comparing(Station::getName));
@@ -51,14 +54,12 @@ public class ControllerImpl implements Controller {
 
     @Override
     public boolean setDate(int day, int month, int year, String time) {
-        if (day == 0 || month == 0) {
-            return false;
-        }
         this.day = day;
         this.month = month;
         this.year = year;
         this.time = time;
-        return true;
+//        checkAvailability();
+        return day != 0 && month != 0;
     }
 
     @Override
@@ -69,6 +70,7 @@ public class ControllerImpl implements Controller {
     @Override
     public void setWagonType(WagonType wagonType) {
         this.wagonType = wagonType;
+//        checkAvailability();
     }
 
     @Override
@@ -81,8 +83,13 @@ public class ControllerImpl implements Controller {
         String out;
         if (currentLabel.equals("СТАРТ")) {
             out = "СТОП";
+            gui.setSettingsEnabled(false);
+            model = new Model(this, gui);
+            model.start();
         } else {
+            model.stopModel();
             out = "СТАРТ";
+            gui.setSettingsEnabled(true);
         }
         gui.setStartButtonLabel(out);
     }
@@ -128,11 +135,24 @@ public class ControllerImpl implements Controller {
                     destStation = station.getId();
                 }
                 gui.setChangeButtonEnabled(startStation != 0 && destStation != 0);
+//                checkAvailability();
                 return true;
             }
         }
+        if (isStartStation) {
+            startStation = 0;
+        } else {
+            destStation = 0;
+        }
         gui.setChangeButtonEnabled(false);
+//        checkAvailability();
         return false;
+    }
+
+    @Override
+    public boolean checkAvailability() {
+        System.out.println(day + "-" + month + "/" + wagonType + "/" + startStation + "/" + destStation);
+        return (day != 0 && month != 0 && wagonType != null && startStation != 0 && destStation != 0);
     }
 
 //    public WagonType getWagonType() {

@@ -49,7 +49,7 @@ public class Gui extends JFrame {
         monthBox = new JComboBox<>();
         dateLabel = new JLabel();
         jSeparator2 = new JSeparator();
-        numTrainLabel = new JLabel();
+        trainNumberLabel = new JLabel();
         anyTrainNumberButton = new JRadioButton();
         specifyTrainButton = new JRadioButton();
         trainNumberField = new JTextField();
@@ -123,6 +123,7 @@ public class Gui extends JFrame {
         placefield5 = new JTextField();
         placefield6 = new JTextField();
         placeFields = new JTextField[]{placeField1, placefield2, placefield3, placefield4, placefield5, placefield6};
+        startFactorMembers = new JLabel[]{startLabel, destLabel, dateLabel, wagonTypeLabel};
         childBox1 = new JCheckBox();
         jSeparator8 = new JSeparator();
         wagonNumLabel = new JLabel();
@@ -223,13 +224,14 @@ public class Gui extends JFrame {
             if (day > 0 && month > 0) {
                 setDate();
             }
+            checkStartAbility();
         });
         dateLabel.setFont(font);
         dateLabel.setForeground(Color.RED);
         dateLabel.setText("Отправление:");
 
-        numTrainLabel.setFont(font);
-        numTrainLabel.setText("Номер поезда:");
+        trainNumberLabel.setFont(font);
+        trainNumberLabel.setText("Номер поезда:");
 
         buttonGroup1.add(anyTrainNumberButton);
         anyTrainNumberButton.setSelected(true);
@@ -242,7 +244,7 @@ public class Gui extends JFrame {
 
         trainNumberField.setFont(new java.awt.Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
         trainNumberField.setForeground(new java.awt.Color(255, 0, 0));
-        trainNumberField.setToolTipText("Номер поезда");
+        trainNumberField.setToolTipText("Полный номер поезда с буквой без пробелов");
         trainNumberField.setEnabled(false);
 
         wagonTypeLabel.setFont(font);
@@ -363,7 +365,7 @@ public class Gui extends JFrame {
                                                                 .addGap(18, 18, 18)
                                                                 .addComponent(changeButton, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE))
                                                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                                                .addComponent(numTrainLabel)
+                                                                .addComponent(trainNumberLabel)
                                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                 .addComponent(anyTrainNumberButton)
                                                                 .addGap(18, 18, 18)
@@ -442,7 +444,7 @@ public class Gui extends JFrame {
                                         .addComponent(specifyTrainButton)
                                         .addComponent(trainNumberField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(anyTrainNumberButton)
-                                        .addComponent(numTrainLabel))
+                                        .addComponent(trainNumberLabel))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jSeparator3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -992,6 +994,7 @@ public class Gui extends JFrame {
                 setMonth > currentMonth ? currentYear : currentYear + 1,
                 String.valueOf(timeBox.getSelectedItem()));
         dateLabel.setForeground(success ? Color.GREEN.darker() : Color.RED);
+        checkStartAbility();
     }
 
     private void wagonTypeChanged(WagonType type) {
@@ -1000,6 +1003,7 @@ public class Gui extends JFrame {
         sameCupeBox.setEnabled(sameWagonBox.isSelected() && areSeveralPassenger() && !(c1Button.isSelected() || c2Button.isSelected()));
         controller.setWagonType(type);
         lateralDiscardBox.setEnabled(plazkartButton.isSelected() || anyWagonTypeButton.isSelected());
+        checkStartAbility();
     }
 
     private void enableLowPlaces() {
@@ -1008,6 +1012,18 @@ public class Gui extends JFrame {
                 lowSeatBoxes[i].setEnabled(plazkartButton.isSelected() || cupeButton.isSelected() || anyWagonTypeButton.isSelected());
             }
         }
+    }
+
+    private void checkStartAbility() {
+        boolean ready = true;
+        for (JLabel l : startFactorMembers) {
+            if (l.getForeground() == Color.RED) {
+                ready = false;
+                break;
+            }
+        }
+        startButton.setEnabled(ready && controller.checkAvailability());
+        System.out.println(ready && controller.checkAvailability());
     }
 
     public void setTrainNumberFieldEnabled(boolean enabled) {
@@ -1110,7 +1126,7 @@ public class Gui extends JFrame {
         surNameFields[num].setEnabled(enable);
         nameFields[num].setEnabled(enable);
         childBoxes[num].setEnabled(enable);
-        lowSeatBoxes[num].setEnabled(enable && plazkartButton.isSelected() || cupeButton.isSelected() || anyWagonTypeButton.isSelected());
+        lowSeatBoxes[num].setEnabled(enable && (plazkartButton.isSelected() || cupeButton.isSelected() || anyWagonTypeButton.isSelected()));
         placeFields[num].setEnabled(enable && manualPlaceBox.isSelected());
         sameWagonBox.setEnabled(areSeveralPassenger() && anyWagonNumberButton.isSelected());
         sameCupeBox.setEnabled(areSeveralPassenger() && (luxButton.isSelected() || plazkartButton.isSelected() || cupeButton.isSelected() || anyWagonTypeButton.isSelected()));
@@ -1148,10 +1164,12 @@ public class Gui extends JFrame {
         startField.addItemListener(e -> {
             boolean realStation = controller.tryToSetStation(String.valueOf(startField.getSelectedItem()), true);
             setStationColor(true, realStation ? Color.GREEN.darker() : Color.RED);
+            checkStartAbility();
         });
         destField.addItemListener(e -> {
             boolean realStation = controller.tryToSetStation(String.valueOf(destField.getSelectedItem()), false);
             setStationColor(false, realStation ? Color.GREEN.darker() : Color.RED);
+            checkStartAbility();
         });
     }
 
@@ -1176,9 +1194,41 @@ public class Gui extends JFrame {
         passwordField.setEnabled(enabled);
     }
 
-    public void setStationColor(boolean isStartStation, Color color) {
+    private void setStationColor(boolean isStartStation, Color color) {
         JLabel label = isStartStation ? startLabel : destLabel;
         label.setForeground(color);
+    }
+
+    public void setStartButtonEnabled(boolean enable) {
+        startButton.setEnabled(enable);
+    }
+
+    public void setSettingsEnabled(boolean enable) {
+        startLabel.setEnabled(enable);
+        startField.setEnabled(enable);
+        destLabel.setEnabled(enable);
+        destField.setEnabled(enable);
+        changeButton.setEnabled(enable);
+        dateLabel.setEnabled(enable);
+        dayBox.setEnabled(enable);
+        monthBox.setEnabled(enable);
+        timeBox.setEnabled(enable);
+        trainNumberLabel.setEnabled(enable);
+        trainNumberField.setEnabled(enable);
+        anyTrainNumberButton.setEnabled(enable);
+        specifyTrainButton.setEnabled(enable);
+        wagonTypeLabel.setEnabled(enable);
+        plazkartButton.setEnabled(enable);
+        cupeButton.setEnabled(enable);
+        luxButton.setEnabled(enable);
+        c1Button.setEnabled(enable);
+        c2Button.setEnabled(enable);
+        anyWagonTypeButton.setEnabled(enable);
+        authorizeBox.setEnabled(enable);
+        browserLabel.setEnabled(enable);
+        edgeButton.setEnabled(enable);
+        chromeButton.setEnabled(enable);
+        firefoxButton.setEnabled(enable);
     }
 
     class MyListCellRenderer extends DefaultListCellRenderer {
@@ -1256,7 +1306,7 @@ public class Gui extends JFrame {
     private JTextField name4;
     private JTextField name5;
     private JTextField name6;
-    private JLabel numTrainLabel;
+    private JLabel trainNumberLabel;
     private JCheckBox passBox1;
     private JCheckBox passBox2;
     private JCheckBox passBox3;
@@ -1296,6 +1346,7 @@ public class Gui extends JFrame {
     private JRadioButton wagonOnlyButton;
     private JTextField wagonOnlyField;
     private JLabel wagonTypeLabel;
+    private JLabel[] startFactorMembers;
     private JCheckBox[] passengerBoxes;
     private JTextField[] surNameFields;
     private JTextField[] nameFields;
