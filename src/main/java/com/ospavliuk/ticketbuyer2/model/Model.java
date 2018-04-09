@@ -2,14 +2,17 @@ package com.ospavliuk.ticketbuyer2.model;
 
 import com.ospavliuk.ticketbuyer2.Gui;
 import com.ospavliuk.ticketbuyer2.controller.Controller;
+import org.openqa.selenium.WebDriver;
 
 public class Model extends Thread {
-    Controller controller;
-    Gui gui;
+    private final Controller controller;
+    private final Gui gui;
+    private final WebDriver webDriver;
 
-    public Model(Controller controller, Gui gui) {
+    public Model(Controller controller, Gui gui, WebDriver webDriver) {
         this.controller = controller;
         this.gui = gui;
+        this.webDriver = webDriver;
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.ospavliuk.ticketbuyer2.controller;
 
 import com.ospavliuk.ticketbuyer2.Gui;
 import com.ospavliuk.ticketbuyer2.model.Model;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,6 +20,7 @@ public class ControllerImpl implements Controller {
     private int day, month, year;
     private String time;
     private boolean isRunning;
+    private WebDriver webDriver;
 
     static {
         stations = new TreeSet<>(Comparator.comparing(Station::getName));
@@ -39,8 +42,14 @@ public class ControllerImpl implements Controller {
         }
     }
 
+    public WebDriver getWebDriver() {
+        return webDriver;
+    }
+
     private ControllerImpl() {
         gui = new Gui(this);
+        webDriver = new EdgeDriver();
+
     }
 
     public static void main(String[] args) {
@@ -84,7 +93,7 @@ public class ControllerImpl implements Controller {
         if (currentLabel.equals("СТАРТ")) {
             out = "СТОП";
             gui.setSettingsEnabled(false);
-            model = new Model(this, gui);
+            model = new Model(this, gui, webDriver);
             model.start();
         } else {
             model.stopModel();
