@@ -1114,6 +1114,16 @@ public class Gui extends JFrame {
         return counter;
     }
 
+    public String getWebDriverType() {
+        for (Enumeration<AbstractButton> buttons = buttonGroup4.getElements(); buttons.hasMoreElements(); ) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+                return button.getText();
+            }
+        }
+        return null;
+    }
+
     protected String getLogin() {
         return usernameField.getText();
     }

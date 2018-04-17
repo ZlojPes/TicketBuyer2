@@ -4,12 +4,15 @@ import com.ospavliuk.ticketbuyer2.Gui;
 import com.ospavliuk.ticketbuyer2.model.Model;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ControllerImpl implements Controller {
     private Gui gui;
@@ -42,13 +45,8 @@ public class ControllerImpl implements Controller {
         }
     }
 
-    public WebDriver getWebDriver() {
-        return webDriver;
-    }
-
     private ControllerImpl() {
         gui = new Gui(this);
-        webDriver = new EdgeDriver();
 
     }
 
@@ -67,7 +65,6 @@ public class ControllerImpl implements Controller {
         this.month = month;
         this.year = year;
         this.time = time;
-//        checkAvailability();
         return day != 0 && month != 0;
     }
 
@@ -79,7 +76,6 @@ public class ControllerImpl implements Controller {
     @Override
     public void setWagonType(WagonType wagonType) {
         this.wagonType = wagonType;
-//        checkAvailability();
     }
 
     @Override
@@ -93,7 +89,7 @@ public class ControllerImpl implements Controller {
         if (currentLabel.equals("СТАРТ")) {
             out = "СТОП";
             gui.setSettingsEnabled(false);
-            model = new Model(this, gui, webDriver);
+            model = new Model(this, gui);
             model.start();
         } else {
             model.stopModel();
