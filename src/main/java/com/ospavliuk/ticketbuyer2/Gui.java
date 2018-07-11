@@ -1023,7 +1023,7 @@ public class Gui extends JFrame {
             }
         }
         startButton.setEnabled(ready && controller.checkAvailability());
-        System.out.println(ready && controller.checkAvailability());
+//        System.out.println(ready && controller.checkAvailability());
     }
 
     public void setTrainNumberFieldEnabled(boolean enabled) {

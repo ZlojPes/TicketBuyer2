@@ -156,7 +156,7 @@ public class ControllerImpl implements Controller {
 
     @Override
     public boolean checkAvailability() {
-        System.out.println(day + "-" + month + "/" + wagonType + "/" + startStation + "/" + destStation);
+//        System.out.println(day + "-" + month + "/" + wagonType + "/" + startStation + "/" + destStation);
         return (day != 0 && month != 0 && wagonType != null && startStation != 0 && destStation != 0);
     }
 
