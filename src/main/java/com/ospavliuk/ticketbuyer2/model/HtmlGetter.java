@@ -49,7 +49,7 @@ public class HtmlGetter {
 
     public static void main(String[] args) {
         try {
-            System.out.println(getURLSource("https://booking.uz.gov.ua/ru/?from=2204001&to=2208001&date=2018-08-24&time=00%3A00&train=059%D0%9E&wagon_type_id=%D0%9A&wagon_num=4&url=train-wagons"));
+            System.out.println(getURLSource("https://booking.uz.gov.ua/ru/?from=2204001&to=2208001&date=2018-08-29&time=00%3A00&url=train-list"));
         } catch (IOException e) {
             e.printStackTrace();
         }
