@@ -113,6 +113,6 @@ public class JsonData {
     public static void main(String[] args) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         JsonData jData = mapper.readValue(json, JsonData.class);
-        System.out.println(jData.data.trainList.get(0).from.station);
+        System.out.println(jData.data.trainList.get(0).isTransformer);
     }
 }

@@ -25,5 +25,4 @@ public class StationJson {
 
     @JsonProperty("srcDate")
     String srcDate;
-
 }

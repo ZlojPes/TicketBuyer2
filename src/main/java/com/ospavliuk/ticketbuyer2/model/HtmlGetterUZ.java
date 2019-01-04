@@ -16,13 +16,13 @@ public class HtmlGetterUZ {
     }
 
     static String getURLSource(String url) throws IOException {
-        String urlParameters = "date=2018-12-29&from=2204001&time=00:00&to=2208001";
+        String urlParameters = "date=2018-12-31&from=2204001&time=00:00&to=2208001";
         byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
         int postDataLength = postData.length;
         URL urlObject = new URL(url);
         HttpURLConnection urlConnection = (HttpURLConnection) urlObject.openConnection();
         urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
-        urlConnection.setRequestProperty("Referer", "https://booking.uz.gov.ua/ru/?from=2204001&to=2208001&date=2018-12-29&time=00%3A00&url=train-list");
+        urlConnection.setRequestProperty("Referer", "https://booking.uz.gov.ua/ru/?from=2204001&to=2208001&date=2018-12-31&time=00%3A00&url=train-list");
         urlConnection.setRequestProperty("Cookie", "_gv_lang=ru; HTTPSERVERID=server4; _gv_sessid=v4htpujmjqshm682fkptk7dv90");
         urlConnection.setInstanceFollowRedirects(false);
         urlConnection.setRequestMethod("POST");
