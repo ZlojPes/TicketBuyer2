@@ -1,46 +1,49 @@
-package com.ospavliuk.ticketbuyer2.model;
+package com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class Train {
     @JsonProperty("num")
-    String number;
+    private String number;
 
     @JsonProperty("category")
-    int category;
+    private int category;
 
     @JsonProperty("isTransformer")
-    boolean isTransformer;
+    private boolean isTransformer;
 
     @JsonProperty("travelTime")
-    String travelTime;
+    private String travelTime;
 
     @JsonProperty("from")
-    StationJson from;
+    private StationJson from;
 
     @JsonProperty("to")
-    StationJson to;
+    private StationJson to;
 
     @JsonProperty("types")
-    List<WagonType> wagonTypeList;
+    private List<WagonType> wagonTypeList;
 
     @JsonProperty("child")
-    Child child;
+    private Child child;
 
     @JsonProperty("allowStudent")
-    boolean allowStudent;
+    private boolean allowStudent;
 
     @JsonProperty("allowBooking")
-    boolean allowBooking;
+    private boolean allowBooking;
 
     @JsonProperty("isCis")
-    boolean isCis;
+    private boolean isCis;
 
     @JsonProperty("isEurope")
-    boolean isEurope;
+    private boolean isEurope;
 
     @JsonProperty("allowPrivilege")
-    boolean allowPrivilege;
+    private boolean allowPrivilege;
+
 }

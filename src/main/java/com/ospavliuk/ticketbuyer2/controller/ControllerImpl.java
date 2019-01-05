@@ -2,17 +2,11 @@ package com.ospavliuk.ticketbuyer2.controller;
 
 import com.ospavliuk.ticketbuyer2.Gui;
 import com.ospavliuk.ticketbuyer2.model.Model;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class ControllerImpl implements Controller {
     private Gui gui;
@@ -23,7 +17,6 @@ public class ControllerImpl implements Controller {
     private int day, month, year;
     private String time;
     private boolean isRunning;
-    private WebDriver webDriver;
 
     static {
         stations = new TreeSet<>(Comparator.comparing(Station::getName));

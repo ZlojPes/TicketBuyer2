@@ -1,4 +1,4 @@
-package com.ospavliuk.ticketbuyer2.model;
+package com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
