@@ -21,7 +21,6 @@ public class StationJson {
     @JsonProperty("time")
     String time;
 
-
     @JsonProperty("sortTime")
     int sortTime;
 
