@@ -1,69 +1,36 @@
 package com.ospavliuk.ticketbuyer2.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ospavliuk.ticketbuyer2.model.jsonparser.wagonlist.WagonParser;
+import com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist.TrainParser;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.ospavliuk.ticketbuyer2.model.HtmlGetterUZ.getUrlSource;
 
 public class Test {
-    static String json = "{\n" +
-            "  \"data\": {\n" +
-            "    \"types\": [\n" +
-            "      {\n" +
-            "        \"type_id\": \"Л\",\n" +
-            "        \"title\": \"Люкс\",\n" +
-            "        \"letter\": \"Л\",\n" +
-            "        \"free\": 14,\n" +
-            "        \"cost\": 118229,\n" +
-            "        \"isOneCost\": true\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"type_id\": \"К\",\n" +
-            "        \"title\": \"Купе\",\n" +
-            "        \"letter\": \"К\",\n" +
-            "        \"free\": 33,\n" +
-            "        \"cost\": 36699,\n" +
-            "        \"isOneCost\": true\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"type_id\": \"П\",\n" +
-            "        \"title\": \"Плацкарт\",\n" +
-            "        \"letter\": \"П\",\n" +
-            "        \"free\": 51,\n" +
-            "        \"cost\": 20656,\n" +
-            "        \"isOneCost\": true\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"wagons\": [\n" +
-            "      {\n" +
-            "        \"num\": 4,\n" +
-            "        \"type_id\": \"К\",\n" +
-            "        \"type\": \"К\",\n" +
-            "        \"class\": \"В\",\n" +
-            "        \"railway\": 43,\n" +
-            "        \"free\": 33,\n" +
-            "        \"byWishes\": false,\n" +
-            "        \"hasBedding\": true,\n" +
-            "        \"obligatoryBedding\": false,\n" +
-            "        \"services\": [\n" +
-            "          \"М\",\n" +
-            "          \"Н\"\n" +
-            "        ],\n" +
-            "        \"prices\": {\n" +
-            "          \"А\": 36699\n" +
-            "        },\n" +
-            "        \"reservePrice\": 1700,\n" +
-            "        \"allowBonus\": false,\n" +
-            "        \"air\": null\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"tplPage\": \"html\"\n" +
-            "  }\n" +
-            "}";
 
-    public static void main(String[] args) throws IOException {
+
+    public static void main(String[] args) {
         ObjectMapper mapper = new ObjectMapper();
-        WagonParser wagonParser = mapper.readValue(json, WagonParser.class);
-        System.out.println(wagonParser.getData().getSelectedCategoryWagons().get(0).getPrices().getPrice());
+        try {
+            Map<String, String> prop = new HashMap<>();
+            List<String> params = new ArrayList<>();
+            prop.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
+            prop.put("Referer", "https://booking.uz.gov.ua/ru/?from=2204001&to=2208001&date=2019-01-30&time=00%3A00&url=train-list");
+            params.add("date=2019-01-30");
+            params.add("from=2204001");
+            params.add("time=00:00");
+            params.add("to=2208001");
+            String urlSource = getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", prop, params);
+            TrainParser trainParser = mapper.readValue(urlSource, TrainParser.class);
+            System.out.println(trainParser.getData().getTrainList().get(1).getNumber());
+            System.out.println();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
