@@ -39,7 +39,6 @@ public class Gui extends JFrame {
         buttonGroup1 = new ButtonGroup();
         buttonGroup2 = new ButtonGroup();
         buttonGroup3 = new ButtonGroup();
-        buttonGroup4 = new ButtonGroup();
         jPanel1 = new JPanel();
         startLabel = new JLabel();
         destLabel = new JLabel();
@@ -74,10 +73,7 @@ public class Gui extends JFrame {
         c2Button = new JRadioButton();
         timeBox = new JComboBox<>();
         jSeparator9 = new JSeparator();
-        browserLabel = new JLabel();
-        edgeButton = new JRadioButton();
         chromeButton = new JRadioButton();
-        firefoxButton = new JRadioButton();
         anyWagonTypeButton = new JRadioButton();
         jSeparator4 = new JSeparator();
         jPanel2 = new JPanel();
@@ -313,19 +309,6 @@ public class Gui extends JFrame {
             }
         });
 
-        browserLabel.setFont(font);
-        browserLabel.setText("Браузер:");
-
-        buttonGroup4.add(edgeButton);
-        edgeButton.setSelected(true);
-        edgeButton.setText("Edge");
-
-        buttonGroup4.add(chromeButton);
-        chromeButton.setText("Chrome");
-
-        buttonGroup4.add(firefoxButton);
-        firefoxButton.setText("FireFox");
-
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -338,10 +321,7 @@ public class Gui extends JFrame {
                                                         .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                                                 .addComponent(authorizeBox)
                                                                 .addGap(79, 79, 79))
-                                                        .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                                                .addComponent(chromeButton)
-                                                                .addGap(28, 28, 28)
-                                                                .addComponent(firefoxButton))))
+                                                        .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup())))
                                         .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                                 .addGap(0, 0, Short.MAX_VALUE)
                                                 .addComponent(passwordField, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE))
@@ -378,7 +358,7 @@ public class Gui extends JFrame {
                                                         .addComponent(jSeparator1)
                                                         .addComponent(jSeparator2)
                                                         .addComponent(jSeparator6, GroupLayout.Alignment.TRAILING)
-                                                        .addComponent(jSeparator9)
+//                                                        .addComponent(jSeparator9)
                                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                                                         .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE)
@@ -404,17 +384,12 @@ public class Gui extends JFrame {
                                                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                                                         .addComponent(anyWagonTypeButton)
                                                                                         .addComponent(luxButton)))
-                                                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                                                .addComponent(browserLabel)
-                                                                                .addGap(30, 30, 30)
-                                                                                .addComponent(edgeButton)))
                                                                 .addGap(0, 0, Short.MAX_VALUE)))))
-                                .addContainerGap())
                         .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(startButton, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)
                                 .addGap(105, 105, 105))
-        );
+        )));
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
@@ -476,13 +451,9 @@ public class Gui extends JFrame {
                                         .addComponent(loginLabel)
                                         .addComponent(passwordLabel))
                                 .addGap(8, 8, 8)
-                                .addComponent(jSeparator9, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+//                                .addComponent(jSeparator9, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addGap(9, 9, 9)
-                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(browserLabel)
-                                        .addComponent(edgeButton)
-                                        .addComponent(chromeButton)
-                                        .addComponent(firefoxButton))
+                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jSeparator7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -1114,16 +1085,6 @@ public class Gui extends JFrame {
         return counter;
     }
 
-    public String getWebDriverType() {
-        for (Enumeration<AbstractButton> buttons = buttonGroup4.getElements(); buttons.hasMoreElements(); ) {
-            AbstractButton button = buttons.nextElement();
-            if (button.isSelected()) {
-                return button.getText();
-            }
-        }
-        return null;
-    }
-
     protected String getLogin() {
         return usernameField.getText();
     }
@@ -1235,10 +1196,6 @@ public class Gui extends JFrame {
         c2Button.setEnabled(enable);
         anyWagonTypeButton.setEnabled(enable);
         authorizeBox.setEnabled(enable);
-        browserLabel.setEnabled(enable);
-        edgeButton.setEnabled(enable);
-        chromeButton.setEnabled(enable);
-        firefoxButton.setEnabled(enable);
     }
 
     class MyListCellRenderer extends DefaultListCellRenderer {
@@ -1263,11 +1220,9 @@ public class Gui extends JFrame {
     private JRadioButton anyWagonTypeButton;
     private JRadioButton anyTrainNumberButton;
     private JCheckBox authorizeBox;
-    private JLabel browserLabel;
     private ButtonGroup buttonGroup1;
     private ButtonGroup buttonGroup2;
     private ButtonGroup buttonGroup3;
-    private ButtonGroup buttonGroup4;
     private JRadioButton c1Button;
     private JRadioButton c2Button;
     private JButton changeButton;
@@ -1281,8 +1236,6 @@ public class Gui extends JFrame {
     private JRadioButton cupeButton;
     private JLabel dateLabel;
     private JComboBox<String> dayBox;
-    private JRadioButton edgeButton;
-    private JRadioButton firefoxButton;
     private JComboBox<String> startField;
     private JLabel startLabel;
     private JCheckBox fullOrderBox;

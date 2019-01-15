@@ -21,7 +21,6 @@ public class Model extends Thread {
     public void run() {
         super.run();
         System.out.println("Model is running");
-        System.out.println("Current web browser is " + gui.getWebDriverType());
     }
 
     public void stopModel() {
