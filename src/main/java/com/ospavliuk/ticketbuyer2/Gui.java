@@ -25,7 +25,6 @@ public class Gui extends JFrame {
         }
     }
 
-
     public Gui(Controller controller) {
         initComponents();
         this.controller = controller;
@@ -993,8 +992,8 @@ public class Gui extends JFrame {
                 break;
             }
         }
-        startButton.setEnabled(ready && controller.checkAvailability());
-//        System.out.println(ready && controller.checkAvailability());
+        startButton.setEnabled(ready && controller.isReady());
+//        System.out.println(ready && controller.isReady());
     }
 
     public void setTrainNumberFieldEnabled(boolean enabled) {

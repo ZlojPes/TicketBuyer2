@@ -7,6 +7,8 @@ public interface Controller {
 
     boolean setDate(int day, int month, int year, String time);
 
+    String getDate();
+
     void trainNumberSelected(String s);
 
     void setWagonType(WagonType button);
@@ -27,5 +29,11 @@ public interface Controller {
 
     boolean tryToSetStation(String name, boolean isStartStation);
 
-    boolean checkAvailability();
+    int getStartStation();
+
+    int getDestStation();
+
+    String getTime();
+
+    boolean isReady();
 }

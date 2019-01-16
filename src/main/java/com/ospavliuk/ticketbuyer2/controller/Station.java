@@ -1,34 +1,23 @@
 package com.ospavliuk.ticketbuyer2.controller;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 
 public class Station implements Serializable {
-    private String name;
+    static final long serialVersionUID = 5984516079037774658L;
+    @Getter
     private int id;
+    @Getter
+    private String name;
 
     public Station(int id, String name) {
-        this.name = name;
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override
     public String toString() {
-        return name +":" + id;
+        return name + ":" + id;
     }
 }

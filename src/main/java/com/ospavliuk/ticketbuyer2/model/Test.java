@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.ospavliuk.ticketbuyer2.model.HtmlGetterUZ.getUrlSource;
-
 public class Test {
 
 
@@ -25,7 +23,7 @@ public class Test {
             params.add("from=2204001");
             params.add("time=00:00");
             params.add("to=2208001");
-            String urlSource = getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", prop, params);
+            String urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", prop, params);
             TrainParser trainParser = mapper.readValue(urlSource, TrainParser.class);
             System.out.println(trainParser.getData().getTrainList().get(1).getNumber());
             System.out.println();

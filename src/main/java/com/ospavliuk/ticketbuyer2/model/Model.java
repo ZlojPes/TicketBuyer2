@@ -1,9 +1,16 @@
 package com.ospavliuk.ticketbuyer2.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ospavliuk.ticketbuyer2.Gui;
 import com.ospavliuk.ticketbuyer2.controller.Controller;
+import com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist.TrainParser;
 
+import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Model extends Thread {
     private final Controller controller;
@@ -12,15 +19,40 @@ public class Model extends Thread {
     public Model(Controller controller, Gui gui) {
         this.controller = controller;
         this.gui = gui;
-
-        String pathToEdgeDriver = Paths.get(".\\src\\main\\resources\\MicrosoftWebDriver.exe").toAbsolutePath().normalize().toString();
-        System.setProperty("webdriver.edge.driver", pathToEdgeDriver);
     }
 
     @Override
     public void run() {
         super.run();
         System.out.println("Model is running");
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> props = new HashMap<>();
+        List<String> params = new ArrayList<>();
+        props.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
+        props.put("Referer", "https://booking.uz.gov.ua/ru/");
+        System.out.println("date=" + controller.getDate());
+        params.add("date=" + controller.getDate());
+        params.add("from=" + controller.getStartStation());
+        params.add("time=" + controller.getTime());
+        params.add("to=" + controller.getDestStation());
+        try {
+            String urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/", "GET", props, null);
+            if (!urlSource.contains("Поиск поездов на")) {
+                System.out.println("Ошибка загрузки главной страницы УЗ");
+                stopModel();
+                return;
+            }
+            TrainParser trainParser;
+            while (true) {
+                urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", props, params);
+                trainParser = mapper.readValue(urlSource, TrainParser.class);
+                trainParser.getData().getTrainList().forEach(System.out::println);
+                return;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stopModel() {

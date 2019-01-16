@@ -2,6 +2,7 @@ package com.ospavliuk.ticketbuyer2.controller;
 
 import com.ospavliuk.ticketbuyer2.Gui;
 import com.ospavliuk.ticketbuyer2.model.Model;
+import lombok.Getter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,10 +14,12 @@ public class ControllerImpl implements Controller {
     private Model model;
     private WagonType wagonType;
     private static final Set<Station> stations;
-    private int startStation, destStation;
     private int day, month, year;
+    @Getter
     private String time;
-    private boolean isRunning;
+    @Getter
+    private int startStation, destStation;
+//    private boolean isRunning;
 
     static {
         stations = new TreeSet<>(Comparator.comparing(Station::getName));
@@ -59,6 +62,10 @@ public class ControllerImpl implements Controller {
         this.year = year;
         this.time = time;
         return day != 0 && month != 0;
+    }
+
+    public String getDate() {
+        return year + "-" + month + "-" + day;
     }
 
     @Override
@@ -133,7 +140,6 @@ public class ControllerImpl implements Controller {
                     destStation = station.getId();
                 }
                 gui.setChangeButtonEnabled(startStation != 0 && destStation != 0);
-//                checkAvailability();
                 return true;
             }
         }
@@ -143,13 +149,11 @@ public class ControllerImpl implements Controller {
             destStation = 0;
         }
         gui.setChangeButtonEnabled(false);
-//        checkAvailability();
         return false;
     }
 
     @Override
-    public boolean checkAvailability() {
-//        System.out.println(day + "-" + month + "/" + wagonType + "/" + startStation + "/" + destStation);
+    public boolean isReady() {
         return (day != 0 && month != 0 && wagonType != null && startStation != 0 && destStation != 0);
     }
 
