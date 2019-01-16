@@ -65,7 +65,7 @@ public class ControllerImpl implements Controller {
     }
 
     public String getDate() {
-        return year + "-" + month + "-" + day;
+        return year + "-" + String.format("%02d", month) + "-" + String.format("%02d", day);
     }
 
     @Override

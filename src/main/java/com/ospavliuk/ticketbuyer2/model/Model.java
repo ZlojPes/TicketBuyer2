@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ospavliuk.ticketbuyer2.Gui;
 import com.ospavliuk.ticketbuyer2.controller.Controller;
 import com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist.TrainParser;
+import com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist.WagonType;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,12 +43,19 @@ public class Model extends Thread {
                 return;
             }
             TrainParser trainParser;
-            while (true) {
-                urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", props, params);
-                trainParser = mapper.readValue(urlSource, TrainParser.class);
-                trainParser.getData().getTrainList().forEach(System.out::println);
-                return;
-            }
+//            while (true) {
+            urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", props, params);
+            trainParser = mapper.readValue(urlSource, TrainParser.class);
+            trainParser.getData().getTrainList().forEach(train -> {
+                System.out.println(train.getNumber());
+                List<WagonType> types = train.getWagonTypeList();
+                if (types.size() == 0) {
+                    System.out.println("Мест нет");
+                }
+                types.forEach(wagonType -> System.out.println(wagonType.getTitle() + ": " + wagonType.getPlaces()));
+                System.out.println();
+            });
+//            }
 
         } catch (IOException e) {
             e.printStackTrace();
