@@ -24,6 +24,7 @@ public class Model extends Thread {
     @Override
     public void run() {
         super.run();
+        gui.cls();
         System.out.println("Model is running");
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> props = new HashMap<>();
@@ -47,13 +48,13 @@ public class Model extends Thread {
             urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", props, params);
             trainParser = mapper.readValue(urlSource, TrainParser.class);
             trainParser.getData().getTrainList().forEach(train -> {
-                System.out.println(train.getNumber());
+                gui.println(train.getNumber());
                 List<WagonType> types = train.getWagonTypeList();
                 if (types.size() == 0) {
-                    System.out.println("Мест нет");
+                    gui.println("Мест нет");
                 }
-                types.forEach(wagonType -> System.out.println(wagonType.getTitle() + ": " + wagonType.getPlaces()));
-                System.out.println();
+                types.forEach(wagonType -> gui.println(wagonType.getTitle() + ": " + wagonType.getPlaces()));
+//                System.out.println();
             });
 //            }
 
