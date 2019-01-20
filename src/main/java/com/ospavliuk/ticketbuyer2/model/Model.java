@@ -31,7 +31,6 @@ public class Model extends Thread {
         List<String> params = new ArrayList<>();
         props.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
         props.put("Referer", "https://booking.uz.gov.ua/ru/");
-        System.out.println("date=" + controller.getDate());
         params.add("date=" + controller.getDate());
         params.add("from=" + controller.getStartStation());
         params.add("time=" + controller.getTime());
@@ -47,7 +46,10 @@ public class Model extends Thread {
 //            while (true) {
             urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", props, params);
             trainParser = mapper.readValue(urlSource, TrainParser.class);
-            trainParser.getData().getTrainList().forEach(train -> {
+            trainParser.getData().getTrainList().
+                    stream().
+                    filter(train -> train.getNumber().matches(gui.getTrainNumber())).
+                    forEach(train -> {
                 gui.println(train.getNumber());
                 List<WagonType> types = train.getWagonTypeList();
                 if (types.size() == 0) {

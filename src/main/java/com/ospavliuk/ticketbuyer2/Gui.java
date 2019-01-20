@@ -1092,6 +1092,10 @@ public class Gui extends JFrame {
         return usernameField.getText();
     }
 
+    public String getTrainNumber(){
+        return anyTrainNumberButton.isSelected()?"^\\d{3}\\D$":trainNumberField.getText().toUpperCase();
+    }
+
     protected String getPassword() {
         return Arrays.toString(passwordField.getPassword());
     }
