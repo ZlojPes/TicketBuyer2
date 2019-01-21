@@ -86,13 +86,17 @@ public class HtmlGetterUZ {
 
     static void getCookies() {
         List<HttpCookie> cookies = cookieManager.getCookieStore().getCookies();
-        for (HttpCookie cookie : cookies) {
-            System.out.println(cookie.getName());
-            System.out.println(cookie.getPath());
-            System.out.println(cookie.getMaxAge());
-            System.out.println(cookie.getValue());
-            System.out.println(cookie.getSecure());
-            System.out.println("**********************");
-        }
+        cookies.
+                stream().
+                filter(cookie -> cookie.getName().contains("sessid")).
+                forEach(cookie -> System.out.println(cookie.getName() + ": " + cookie.getValue()));
+//        for (HttpCookie cookie : cookies) {
+//            System.out.println(cookie.getName());
+//            System.out.println(cookie.getPath());
+//            System.out.println(cookie.getMaxAge());
+//            System.out.println(cookie.getValue());
+//            System.out.println(cookie.getSecure());
+//            System.out.println("**********************");
+//        }
     }
 }

@@ -11,6 +11,11 @@ public class Data {
     @JsonProperty("list")
     List<Train> trainList;
 
+
+    @Getter
+    @JsonProperty("warning")
+    String warning;
+
     @JsonProperty("tplPage")
     String tplPage;
 

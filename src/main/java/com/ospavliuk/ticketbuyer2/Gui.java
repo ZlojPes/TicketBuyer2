@@ -1092,8 +1092,8 @@ public class Gui extends JFrame {
         return usernameField.getText();
     }
 
-    public String getTrainNumber(){
-        return anyTrainNumberButton.isSelected()?"^\\d{3}\\D$":trainNumberField.getText().toUpperCase();
+    public String getTrainNumber() {
+        return anyTrainNumberButton.isSelected() ? "" : trainNumberField.getText().toUpperCase();
     }
 
     protected String getPassword() {
@@ -1192,7 +1192,7 @@ public class Gui extends JFrame {
         monthBox.setEnabled(enable);
         timeBox.setEnabled(enable);
         trainNumberLabel.setEnabled(enable);
-        trainNumberField.setEnabled(enable);
+        trainNumberField.setEnabled(enable && specifyTrainButton.isSelected());
         anyTrainNumberButton.setEnabled(enable);
         specifyTrainButton.setEnabled(enable);
         wagonTypeLabel.setEnabled(enable);

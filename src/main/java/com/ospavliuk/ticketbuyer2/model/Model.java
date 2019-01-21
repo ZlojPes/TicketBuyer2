@@ -46,20 +46,24 @@ public class Model extends Thread {
 //            while (true) {
             urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", props, params);
             trainParser = mapper.readValue(urlSource, TrainParser.class);
+            String warningMessage = trainParser.getData().getWarning();
+            if (warningMessage != null) {
+                gui.println(warningMessage);
+                return;
+            }
             trainParser.getData().getTrainList().
                     stream().
-                    filter(train -> train.getNumber().matches(gui.getTrainNumber())).
+                    filter(train -> train.getNumber().contains(gui.getTrainNumber())).
                     forEach(train -> {
-                gui.println(train.getNumber());
-                List<WagonType> types = train.getWagonTypeList();
-                if (types.size() == 0) {
-                    gui.println("Мест нет");
-                }
-                types.forEach(wagonType -> gui.println(wagonType.getTitle() + ": " + wagonType.getPlaces()));
-//                System.out.println();
-            });
+                        gui.println(train.getNumber());
+                        List<WagonType> types = train.getWagonTypeList();
+                        if (types.size() == 0) {
+                            gui.println("Мест нет");
+                        }
+                        types.forEach(wagonType -> gui.println(wagonType.getTitle() + ": " + wagonType.getPlaces()));
+                    });
 //            }
-
+            HtmlGetterUZ.getCookies();
         } catch (IOException e) {
             e.printStackTrace();
         }
