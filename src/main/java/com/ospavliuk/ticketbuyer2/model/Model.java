@@ -51,16 +51,13 @@ public class Model extends Thread {
                 gui.println(warningMessage);
                 return;
             }
-            trainParser.getData().getTrainList().
-                    stream().
+            trainParser.getData().getTrainList().stream().
                     filter(train -> train.getNumber().contains(gui.getTrainNumber())).
                     forEach(train -> {
-                        gui.println(train.getNumber());
                         List<WagonType> types = train.getWagonTypeList();
-                        if (types.size() == 0) {
-                            gui.println("Мест нет");
-                        }
-                        types.forEach(wagonType -> gui.println(wagonType.getTitle() + ": " + wagonType.getPlaces()));
+                        types.stream().
+                                filter(wagonType -> wagonType.getLetter().contains(controller.getSelectedWagonType())).
+                                forEach(wagonType -> gui.println(train.getNumber() + "\n" + wagonType.getTitle() + ": " + wagonType.getPlaces()));
                     });
 //            }
             HtmlGetterUZ.getCookies();

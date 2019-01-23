@@ -35,5 +35,7 @@ public interface Controller {
 
     String getTime();
 
+    String getSelectedWagonType();
+
     boolean isReady();
 }

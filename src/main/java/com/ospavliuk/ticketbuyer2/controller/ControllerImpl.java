@@ -157,6 +157,32 @@ public class ControllerImpl implements Controller {
         return (day != 0 && month != 0 && wagonType != null && startStation != 0 && destStation != 0);
     }
 
+    @Override
+    public String getSelectedWagonType() {
+        String type;
+        switch (wagonType) {
+            case PLATZKART:
+                type = "П";
+                break;
+            case C1:
+                type = "С1";
+                break;
+            case C2:
+                type = "С2";
+                break;
+            case LUX:
+                type = "Л";
+                break;
+            case KUPE:
+                type = "К";
+                break;
+            case ANY_TYPE:
+            default:
+                type = "";
+        }
+        return type;
+    }
+
 //    public WagonType getWagonType() {
 //        return wagonType;
 //    }

@@ -54,8 +54,11 @@ public class Gui extends JFrame {
         jSeparator3 = new JSeparator();
         wagonTypeLabel = new JLabel();
         plazkartButton = new JRadioButton();
+        c1Button = new JRadioButton();
+        c2Button = new JRadioButton();
         cupeButton = new JRadioButton();
         luxButton = new JRadioButton();
+        anyWagonTypeButton = new JRadioButton();
         startButton = new JButton();
         jSeparator6 = new JSeparator();
         jScrollPane1 = new JScrollPane();
@@ -68,12 +71,8 @@ public class Gui extends JFrame {
         passwordField = new JPasswordField();
         startField = new JComboBox<>();
         destField = new JComboBox<>();
-        c1Button = new JRadioButton();
-        c2Button = new JRadioButton();
         timeBox = new JComboBox<>();
         jSeparator9 = new JSeparator();
-        chromeButton = new JRadioButton();
-        anyWagonTypeButton = new JRadioButton();
         jSeparator4 = new JSeparator();
         jPanel2 = new JPanel();
         passengersLabel = new JLabel();
@@ -1239,7 +1238,6 @@ public class Gui extends JFrame {
     private JCheckBox childBox4;
     private JCheckBox childBox5;
     private JCheckBox childBox6;
-    private JRadioButton chromeButton;
     private JRadioButton cupeButton;
     private JLabel dateLabel;
     private JComboBox<String> dayBox;
