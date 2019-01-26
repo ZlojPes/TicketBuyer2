@@ -1015,7 +1015,7 @@ public class Gui extends JFrame {
         stationIsTyping(destField);
     }
 
-    private void print(String text) {
+    public void print(String text) {
         infoArea.setText(infoArea.getText() + text);
         infoArea.setCaretPosition(infoArea.getDocument().getLength());
     }

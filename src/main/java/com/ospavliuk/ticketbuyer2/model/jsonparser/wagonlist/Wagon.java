@@ -1,11 +1,11 @@
 package com.ospavliuk.ticketbuyer2.model.jsonparser.wagonlist;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 @Getter
 public class Wagon {
     @JsonProperty("num")

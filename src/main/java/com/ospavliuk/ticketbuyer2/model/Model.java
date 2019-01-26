@@ -3,11 +3,12 @@ package com.ospavliuk.ticketbuyer2.model;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ospavliuk.ticketbuyer2.Gui;
 import com.ospavliuk.ticketbuyer2.controller.Controller;
+import com.ospavliuk.ticketbuyer2.model.jsonparser.placelist.PlaceParser;
 import com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist.TrainParser;
 import com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist.WagonType;
+import com.ospavliuk.ticketbuyer2.model.jsonparser.wagonlist.WagonParser;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +29,13 @@ public class Model extends Thread {
         System.out.println("Model is running");
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> props = new HashMap<>();
-        List<String> params = new ArrayList<>();
+        Map<String, String> params = new HashMap<>();
         props.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
         props.put("Referer", "https://booking.uz.gov.ua/ru/");
-        params.add("date=" + controller.getDate());
-        params.add("from=" + controller.getStartStation());
-        params.add("time=" + controller.getTime());
-        params.add("to=" + controller.getDestStation());
+        params.put("from", String.valueOf(controller.getStartStation()));
+        params.put("to", String.valueOf(controller.getDestStation()));
+        params.put("date", controller.getDate());
+        params.put("time", controller.getTime());
         try {
             String urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/", "GET", props, null);
             if (!urlSource.contains("Поиск поездов на")) {
@@ -57,9 +58,37 @@ public class Model extends Thread {
                         List<WagonType> types = train.getWagonTypeList();
                         types.stream().
                                 filter(wagonType -> wagonType.getLetter().contains(controller.getSelectedWagonType())).
-                                forEach(wagonType -> gui.println(train.getNumber() + "\n" + wagonType.getTitle() + ": " + wagonType.getPlaces()));
+                                forEach(wagonType -> {
+                                    gui.println(train.getNumber() + " В пути: " + train.getTravelTime() + "\n" + wagonType.getTitle() + ": " + wagonType.getPlaces());
+                                    params.put("train", train.getNumber());
+                                    params.put("wagon_type_id", wagonType.getLetter());
+                                    String urlSource2;
+                                    try {
+                                        urlSource2 = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_wagons/", "POST", props, params);
+                                        WagonParser wagonParser = mapper.readValue(urlSource2, WagonParser.class);
+                                        wagonParser.getData().getSelectedCategoryWagons().forEach(type -> {
+                                            gui.println("Price: " + (float) type.getPrices().getPrice() / 100);
+                                            params.put("wagon_num", String.valueOf(type.getNumber()));
+                                            params.put("wagon_type", type.getType());
+                                            params.put("wagon_class", type.getWagonClass());
+                                            try {
+                                                String urlSource3 = HtmlGetterUZ.getUrlSource(" https://booking.uz.gov.ua/ru/train_wagon/", "POST", props, params);
+                                                PlaceParser placeParser = mapper.readValue(urlSource3, PlaceParser.class);
+                                                gui.print("Места: ");
+                                                placeParser.getData().getPlaces().getPlaceList().forEach(place -> gui.print(place + ", "));
+                                                gui.println("");
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                        });
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
                     });
 //            }
+            System.out.println(params.entrySet().size());
             HtmlGetterUZ.getCookies();
         } catch (IOException e) {
             e.printStackTrace();

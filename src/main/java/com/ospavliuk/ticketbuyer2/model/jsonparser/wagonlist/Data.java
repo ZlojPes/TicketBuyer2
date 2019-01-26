@@ -5,16 +5,16 @@ import lombok.Getter;
 
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 @Getter
 public class Data {
 
     @JsonProperty("types")
-    List<WagonType> availableTypes;
+    List<WagonTypes> availableTypes;
 
     @JsonProperty("wagons")
     List<Wagon> selectedCategoryWagons;
 
     @JsonProperty("tplPage")
     String tplPage;
-
 }

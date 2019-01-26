@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class HtmlGetterUZ {
+class HtmlGetterUZ {
     private static CookieManager cookieManager;
 
     static {
@@ -14,7 +14,7 @@ public class HtmlGetterUZ {
         CookieHandler.setDefault(cookieManager);
     }
 
-    public static String getUrlSource(String url, String requestMethod, Map<String, String> requestProperty, List<String> postParameters) throws IOException {
+    static String getUrlSource(String url, String requestMethod, Map<String, String> requestProperty, Map<String, String> postParameters) throws IOException {
         URL urlObject = new URL(url);
         boolean requestMethodIsPost = (requestMethod != null && postParameters != null && requestMethod.equals("POST"));
         HttpURLConnection urlConnection = (HttpURLConnection) urlObject.openConnection();
@@ -28,11 +28,16 @@ public class HtmlGetterUZ {
         if (requestMethodIsPost) {
             urlConnection.setInstanceFollowRedirects(false);
             StringBuilder urlParams = new StringBuilder();
-            for (String parameter : postParameters) {
+            Set<Map.Entry<String, String>> paramSet = postParameters.entrySet();
+            for (Map.Entry<String, String> current : paramSet) {
                 if (urlParams.length() > 0) {
                     urlParams.append("&");
                 }
-                urlParams.append(parameter);
+                if (current.getKey() != null && current.getValue() != null) {
+                    urlParams.append(current.getKey());
+                    urlParams.append("=");
+                    urlParams.append(current.getValue());
+                }
             }
             String urlParameters = urlParams.toString();
             byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
@@ -72,6 +77,7 @@ public class HtmlGetterUZ {
         String result = "Connection failed!";
         try {
             result = future.get(5, TimeUnit.SECONDS);
+            System.out.println("request");
         } catch (TimeoutException ex) {
             System.out.print("TimeOut");
         } catch (InterruptedException e) {

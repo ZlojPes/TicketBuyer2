@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 @Getter
 public class Train {
     @JsonProperty("num")

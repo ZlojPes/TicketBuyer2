@@ -183,7 +183,7 @@ public class ControllerImpl implements Controller {
         return type;
     }
 
-//    public WagonType getWagonType() {
+//    public WagonTypes getWagonType() {
 //        return wagonType;
 //    }
 }

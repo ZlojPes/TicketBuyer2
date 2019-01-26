@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 public class Places {
     @Getter
     @JsonProperty("А")

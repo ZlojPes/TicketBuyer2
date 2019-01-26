@@ -5,13 +5,13 @@ import lombok.Getter;
 
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
+@Getter
 public class Data {
 
-    @Getter
     @JsonProperty("list")
     List<Train> trainList;
 
-    @Getter
     @JsonProperty("warning")
     String warning;
 
