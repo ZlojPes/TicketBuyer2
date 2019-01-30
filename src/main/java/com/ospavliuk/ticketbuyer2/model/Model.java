@@ -3,6 +3,7 @@ package com.ospavliuk.ticketbuyer2.model;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ospavliuk.ticketbuyer2.Gui;
 import com.ospavliuk.ticketbuyer2.controller.Controller;
+import com.ospavliuk.ticketbuyer2.controller.Passenger;
 import com.ospavliuk.ticketbuyer2.model.jsonparser.placelist.PlaceParser;
 import com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist.TrainParser;
 import com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist.WagonType;
@@ -29,6 +30,7 @@ public class Model extends Thread {
         System.out.println("Model is running");
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> props = new HashMap<>();
+
         Map<String, String> params = new HashMap<>();
         props.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
         props.put("Referer", "https://booking.uz.gov.ua/ru/");
@@ -85,6 +87,8 @@ public class Model extends Thread {
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
+                                    List<Passenger> passengerList = controller.getPassengerList();
+                                    System.out.println(passengerList.get(0).getName());
                                 });
                     });
 //            }

@@ -38,4 +38,6 @@ public interface Controller {
     String getSelectedWagonType();
 
     boolean isReady();
+
+    List<Passenger> getPassengerList();
 }

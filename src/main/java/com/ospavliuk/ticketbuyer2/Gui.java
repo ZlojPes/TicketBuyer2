@@ -2,6 +2,7 @@ package com.ospavliuk.ticketbuyer2;
 
 import com.ospavliuk.ticketbuyer2.controller.Controller;
 import com.ospavliuk.ticketbuyer2.controller.WagonType;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -1315,11 +1316,17 @@ public class Gui extends JFrame {
     private JTextField wagonOnlyField;
     private JLabel wagonTypeLabel;
     private JLabel[] startFactorMembers;
+    @Getter
     private JCheckBox[] passengerBoxes;
+    @Getter
     private JTextField[] surNameFields;
+    @Getter
     private JTextField[] nameFields;
+    @Getter
     private JCheckBox[] lowSeatBoxes;
+    @Getter
     private JCheckBox[] childBoxes;
+    @Getter
     private JTextField[] placeFields;
     private final Controller controller;
     private Hashtable<Integer, Color> table;

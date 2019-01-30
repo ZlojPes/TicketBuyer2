@@ -4,6 +4,7 @@ import com.ospavliuk.ticketbuyer2.Gui;
 import com.ospavliuk.ticketbuyer2.model.Model;
 import lombok.Getter;
 
+import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,6 +20,8 @@ public class ControllerImpl implements Controller {
     private String time;
     @Getter
     private int startStation, destStation;
+    @Getter
+    private List<Passenger> passengerList;
 //    private boolean isRunning;
 
     static {
@@ -84,12 +87,13 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public void startPressed(String currentLabel) {
+    public void startPressed(String buttonText) {
         String out;
-        if (currentLabel.equals("СТАРТ")) {
+        if (buttonText.equals("СТАРТ")) {
             out = "СТОП";
             gui.setSettingsEnabled(false);
             model = new Model(this, gui);
+            createPassengerList();
             model.start();
         } else {
             model.stopModel();
@@ -97,6 +101,28 @@ public class ControllerImpl implements Controller {
             gui.setSettingsEnabled(true);
         }
         gui.setStartButtonLabel(out);
+    }
+
+    void createPassengerList() {
+        JCheckBox[] passengerBoxes = gui.getPassengerBoxes();
+        JTextField[] surNameFields = gui.getSurNameFields();
+        JTextField[] nameFields = gui.getNameFields();
+        JCheckBox[] lowSeatBoxes = gui.getLowSeatBoxes();
+        JCheckBox[] childBoxes = gui.getChildBoxes();
+        JTextField[] placeFields = gui.getPlaceFields();
+        List<Passenger> passengerList = new ArrayList<>();
+        for (int i = 0; i < passengerBoxes.length; i++) {
+            JCheckBox passengerBox = passengerBoxes[i];
+            if (passengerBox.isSelected()) {
+                passengerList.add(new Passenger(surNameFields[i].getText(),
+                        nameFields[i].getText(),
+                        lowSeatBoxes[i].isSelected(),
+                        childBoxes[i].isSelected(),
+                        placeFields[i].getText())
+                );
+            }
+        }
+        this.passengerList = passengerList;
     }
 
     @Override
