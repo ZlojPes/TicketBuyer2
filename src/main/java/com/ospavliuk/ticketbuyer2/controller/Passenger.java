@@ -1,7 +1,6 @@
 package com.ospavliuk.ticketbuyer2.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
 @AllArgsConstructor
 @Getter
@@ -10,5 +9,6 @@ public class Passenger {
     private String name;
     private boolean child;
     private boolean lowPlace;
+    @Setter
     private String place;
 }

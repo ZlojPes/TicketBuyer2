@@ -11,6 +11,7 @@ import com.ospavliuk.ticketbuyer2.model.jsonparser.wagonlist.WagonParser;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +55,7 @@ public class Model extends Thread {
                 gui.println(warningMessage);
                 return;
             }
+            List<Passenger> passengerList = controller.getPassengerList();
             trainParser.getData().getTrainList().stream().
                     filter(train -> train.getNumber().contains(gui.getTrainNumber())).
                     forEach(train -> {
@@ -76,9 +78,29 @@ public class Model extends Thread {
                                             try {
                                                 String urlSource3 = HtmlGetterUZ.getUrlSource(" https://booking.uz.gov.ua/ru/train_wagon/", "POST", props, params);
                                                 PlaceParser placeParser = mapper.readValue(urlSource3, PlaceParser.class);
-                                                gui.print("Места: ");
-                                                placeParser.getData().getPlaces().getPlaceList().forEach(place -> gui.print(place + ", "));
-                                                gui.println("");
+                                                List<String> placeList = placeParser.getData().getPlaces().getPlaceList();
+                                                if (placeList.size() >= passengerList.size()) {
+                                                    Iterator<String> iterator = placeList.iterator();
+                                                    passengerList.forEach(passenger -> {
+                                                        if (passenger.getPlace().isEmpty() && iterator.hasNext()) {
+                                                            passenger.setPlace(iterator.next());
+                                                        }
+                                                    });
+                                                    Map<String, String> orderParams = new HashMap<>();
+                                                    for (int i = 0; i < passengerList.size(); i++) {
+                                                        Passenger passenger = passengerList.get(i);
+                                                        orderParams.put("places[" + i + "][ord]", String.valueOf(i));
+                                                        orderParams.put("places[" + i + "][from]", String.valueOf(controller.getStartStation()));
+                                                        orderParams.put("places[" + i + "][to]", String.valueOf(controller.getDestStation()));
+                                                        orderParams.put("places[" + i + "][train]", train.getNumber());
+                                                        orderParams.put("places[" + i + "][date]", controller.getDate());
+                                                        orderParams.put("places[" + i + "][wagon_num]", String.valueOf(type.getNumber()));
+                                                        orderParams.put("places[" + i + "][wagon_class]", type.getWagonClass());
+                                                        orderParams.put("places[" + i + "][wagon_type]", type.getType());
+                                                        orderParams.put("places[" + i + "][wagon_railway]", "43");
+
+                                                    }
+                                                }
                                             } catch (IOException e) {
                                                 e.printStackTrace();
                                             }
@@ -87,7 +109,6 @@ public class Model extends Thread {
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
-                                    List<Passenger> passengerList = controller.getPassengerList();
                                     System.out.println(passengerList.get(0).getName());
                                 });
                     });
