@@ -9,6 +9,8 @@ public interface Controller {
 
     String getDate();
 
+    String getChildDate();
+
     void trainNumberSelected(String s);
 
     void setWagonType(WagonType button);

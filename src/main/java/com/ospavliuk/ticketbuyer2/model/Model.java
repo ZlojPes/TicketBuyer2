@@ -10,10 +10,8 @@ import com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist.WagonType;
 import com.ospavliuk.ticketbuyer2.model.jsonparser.wagonlist.WagonParser;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class Model extends Thread {
     private final Controller controller;
@@ -80,13 +78,17 @@ public class Model extends Thread {
                                                 PlaceParser placeParser = mapper.readValue(urlSource3, PlaceParser.class);
                                                 List<String> placeList = placeParser.getData().getPlaces().getPlaceList();
                                                 if (placeList.size() >= passengerList.size()) {
+                                                    System.out.println("placeList.size() OK");
                                                     Iterator<String> iterator = placeList.iterator();
                                                     passengerList.forEach(passenger -> {
                                                         if (passenger.getPlace().isEmpty() && iterator.hasNext()) {
+                                                            System.out.println("passenger.getPlace().isEmpty() OK");
+                                                            System.out.println("passenger.isChild():" + passenger.isChild());
+
                                                             passenger.setPlace(iterator.next());
                                                         }
                                                     });
-                                                    Map<String, String> orderParams = new HashMap<>();
+                                                    Map<String, String> orderParams = new LinkedHashMap<>();
                                                     for (int i = 0; i < passengerList.size(); i++) {
                                                         Passenger passenger = passengerList.get(i);
                                                         orderParams.put("places[" + i + "][ord]", String.valueOf(i));
@@ -96,24 +98,40 @@ public class Model extends Thread {
                                                         orderParams.put("places[" + i + "][date]", controller.getDate());
                                                         orderParams.put("places[" + i + "][wagon_num]", String.valueOf(type.getNumber()));
                                                         orderParams.put("places[" + i + "][wagon_class]", type.getWagonClass());
-                                                        orderParams.put("places[" + i + "][wagon_type]", type.getType());
+                                                        String t = type.getType();
+                                                        orderParams.put("places[" + i + "][wagon_type]", t);
                                                         orderParams.put("places[" + i + "][wagon_railway]", "43");
-
+                                                        orderParams.put("places[" + i + "][charline]", "А");
+                                                        orderParams.put("places[" + i + "][firstname]", passenger.getName());
+                                                        orderParams.put("places[" + i + "][lastname]", passenger.getSurName());
+                                                        orderParams.put("places[" + i + "][bedding]", t.equals("К") | t.equals("П") | t.equals("Л") ? "1" : "0");
+                                                        orderParams.put("places[" + i + "][services][]", "Н");
+                                                        orderParams.put("places[" + i + "][child]", passenger.isChild() ? controller.getChildDate() : "");
+                                                        orderParams.put("places[" + i + "][student]", "");
+                                                        orderParams.put("places[" + i + "][reserve]", "0");
+                                                        orderParams.put("places[" + i + "][place_num]", passenger.getPlace());
                                                     }
+                                                    orderParams.forEach((key, value) -> System.out.println(key + ":" + value));
+                                                    String urlSource4 = HtmlGetterUZ.getUrlSource(" https://booking.uz.gov.ua/ru/cart/add/", "POST", props, orderParams);
+                                                    System.out.println("\n" + urlSource4);
+                                                    if (urlSource4.contains("\"brand\":\"" + train.getNumber()) && urlSource4.contains("\"placesCount\":" + passengerList.size())) {
+                                                        gui.print("OK");
+                                                    } else {
+                                                        gui.print("Fail");
+                                                    }
+                                                    stopModel();
+                                                    return;
                                                 }
                                             } catch (IOException e) {
                                                 e.printStackTrace();
                                             }
-
                                         });
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
-                                    System.out.println(passengerList.get(0).getName());
                                 });
                     });
 //            }
-            System.out.println(params.entrySet().size());
             HtmlGetterUZ.getCookies();
         } catch (IOException e) {
             e.printStackTrace();

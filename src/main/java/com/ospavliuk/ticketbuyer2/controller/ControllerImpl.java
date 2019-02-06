@@ -67,8 +67,14 @@ public class ControllerImpl implements Controller {
         return day != 0 && month != 0;
     }
 
+    @Override
     public String getDate() {
         return year + "-" + String.format("%02d", month) + "-" + String.format("%02d", day);
+    }
+
+    @Override
+    public String getChildDate() {
+        return (year - 8) + "-" + String.format("%02d", month) + "-" + String.format("%02d", day);
     }
 
     @Override
