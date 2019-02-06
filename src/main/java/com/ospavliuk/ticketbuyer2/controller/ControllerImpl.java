@@ -12,7 +12,6 @@ import java.util.*;
 
 public class ControllerImpl implements Controller {
     private Gui gui;
-    private Model model;
     private WagonType wagonType;
     private static final Set<Station> stations;
     private int day, month, year;
@@ -22,7 +21,8 @@ public class ControllerImpl implements Controller {
     private int startStation, destStation;
     @Getter
     private List<Passenger> passengerList;
-//    private boolean isRunning;
+    @Getter
+    private boolean running;
 
     static {
         stations = new TreeSet<>(Comparator.comparing(Station::getName));
@@ -93,23 +93,24 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public void startPressed(String buttonText) {
+    public void startStop() {
         String out;
-        if (buttonText.equals("СТАРТ")) {
+        if (gui.getStsrtbuttonText().equals("СТАРТ")) {
             out = "СТОП";
             gui.setSettingsEnabled(false);
-            model = new Model(this, gui);
+            Model model = new Model(this, gui);
             createPassengerList();
             model.start();
+            running = true;
         } else {
-            model.stopModel();
             out = "СТАРТ";
             gui.setSettingsEnabled(true);
+            running = false;
         }
         gui.setStartButtonLabel(out);
     }
 
-    void createPassengerList() {
+    private void createPassengerList() {
         JCheckBox[] passengerBoxes = gui.getPassengerBoxes();
         JTextField[] surNameFields = gui.getSurNameFields();
         JTextField[] nameFields = gui.getNameFields();
@@ -122,8 +123,8 @@ public class ControllerImpl implements Controller {
             if (passengerBox.isSelected()) {
                 passengerList.add(new Passenger(surNameFields[i].getText(),
                         nameFields[i].getText(),
-                        lowSeatBoxes[i].isSelected(),
                         childBoxes[i].isSelected(),
+                        lowSeatBoxes[i].isSelected(),
                         placeFields[i].getText())
                 );
             }

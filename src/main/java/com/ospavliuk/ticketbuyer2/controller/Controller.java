@@ -7,6 +7,8 @@ public interface Controller {
 
     boolean setDate(int day, int month, int year, String time);
 
+    boolean isRunning();
+
     String getDate();
 
     String getChildDate();
@@ -17,7 +19,7 @@ public interface Controller {
 
     void authSelected(boolean selected);
 
-    void startPressed(String currentLabel);
+    void startStop();
 
     void passengerEnabled(int num, boolean enabled);
 

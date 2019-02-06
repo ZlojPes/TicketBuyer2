@@ -90,19 +90,14 @@ class HtmlGetterUZ {
         return result;
     }
 
-    static void getCookies() {
+    static String getSessionId() {
         List<HttpCookie> cookies = cookieManager.getCookieStore().getCookies();
-        cookies.
-                stream().
-                filter(cookie -> cookie.getName().contains("sessid")).
-                forEach(cookie -> System.out.println(cookie.getName() + ": " + cookie.getValue()));
-//        for (HttpCookie cookie : cookies) {
-//            System.out.println(cookie.getName());
-//            System.out.println(cookie.getPath());
-//            System.out.println(cookie.getMaxAge());
-//            System.out.println(cookie.getValue());
-//            System.out.println(cookie.getSecure());
-//            System.out.println("**********************");
-//        }
+        String sessionId = "Empty";
+        for (HttpCookie cookie : cookies) {
+            if (cookie.getName().contains("sessid")) {
+                sessionId = cookie.getName() + ": " + cookie.getValue();
+            }
+        }
+        return sessionId;
     }
 }

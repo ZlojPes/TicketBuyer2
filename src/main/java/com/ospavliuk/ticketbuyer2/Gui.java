@@ -33,9 +33,7 @@ public class Gui extends JFrame {
         setVisible(true);
     }
 
-    @SuppressWarnings("unchecked")
     private void initComponents() {
-
         buttonGroup1 = new ButtonGroup();
         buttonGroup2 = new ButtonGroup();
         buttonGroup3 = new ButtonGroup();
@@ -249,7 +247,7 @@ public class Gui extends JFrame {
         startButton.setFont(new java.awt.Font("Tahoma", Font.PLAIN, 18));
         startButton.setText("СТАРТ");
         startButton.setEnabled(false);
-        startButton.addActionListener(evt -> controller.startPressed(startButton.getText()));
+        startButton.addActionListener(evt -> controller.startStop());
 
         infoArea.setEditable(false);
         infoArea.setColumns(20);
@@ -1096,6 +1094,10 @@ public class Gui extends JFrame {
         return anyTrainNumberButton.isSelected() ? "" : trainNumberField.getText().toUpperCase();
     }
 
+    public String getStsrtbuttonText() {
+        return startButton.getText();
+    }
+
     protected String getPassword() {
         return Arrays.toString(passwordField.getPassword());
     }
@@ -1117,7 +1119,7 @@ public class Gui extends JFrame {
         childBoxes = new JCheckBox[]{childBox1, childBox2, childBox3, childBox4, childBox5, childBox6};
         surNameFields = new JTextField[]{surName1, surName2, surName3, surName4, surName5, surName6};
         nameFields = new JTextField[]{name1, name2, name3, name4, name5, name6};
-        table = new Hashtable<Integer, Color>();
+        table = new Hashtable<>();
         table.put(0, Color.MAGENTA);
         table.put(1, Color.RED);
         table.put(2, Color.BLUE);
