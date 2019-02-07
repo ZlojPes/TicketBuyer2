@@ -34,23 +34,23 @@ public class Gui extends JFrame {
     }
 
     private void initComponents() {
-        buttonGroup1 = new ButtonGroup();
-        buttonGroup2 = new ButtonGroup();
-        buttonGroup3 = new ButtonGroup();
-        jPanel1 = new JPanel();
+        ButtonGroup buttonGroup1 = new ButtonGroup();
+        ButtonGroup buttonGroup2 = new ButtonGroup();
+        ButtonGroup buttonGroup3 = new ButtonGroup();
+        JPanel jPanel1 = new JPanel();
         startLabel = new JLabel();
         destLabel = new JLabel();
-        jSeparator1 = new JSeparator();
+        JSeparator jSeparator1 = new JSeparator();
         changeButton = new JButton();
         dayBox = new JComboBox<>();
         monthBox = new JComboBox<>();
         dateLabel = new JLabel();
-        jSeparator2 = new JSeparator();
+        JSeparator jSeparator2 = new JSeparator();
         trainNumberLabel = new JLabel();
         anyTrainNumberButton = new JRadioButton();
         specifyTrainButton = new JRadioButton();
         trainNumberField = new JTextField();
-        jSeparator3 = new JSeparator();
+        JSeparator jSeparator3 = new JSeparator();
         wagonTypeLabel = new JLabel();
         plazkartButton = new JRadioButton();
         c1Button = new JRadioButton();
@@ -59,22 +59,22 @@ public class Gui extends JFrame {
         luxButton = new JRadioButton();
         anyWagonTypeButton = new JRadioButton();
         startButton = new JButton();
-        jSeparator6 = new JSeparator();
-        jScrollPane1 = new JScrollPane();
+        JSeparator jSeparator6 = new JSeparator();
+        JScrollPane jScrollPane1 = new JScrollPane();
         infoArea = new JTextArea();
-        jSeparator7 = new JSeparator();
+        JSeparator jSeparator7 = new JSeparator();
         authorizeBox = new JCheckBox();
         usernameField = new JTextField();
-        loginLabel = new JLabel();
-        passwordLabel = new JLabel();
+        JLabel loginLabel = new JLabel();
+        JLabel passwordLabel = new JLabel();
         passwordField = new JPasswordField();
         startField = new JComboBox<>();
         destField = new JComboBox<>();
         timeBox = new JComboBox<>();
-        jSeparator9 = new JSeparator();
-        jSeparator4 = new JSeparator();
-        jPanel2 = new JPanel();
-        passengersLabel = new JLabel();
+        JSeparator jSeparator9 = new JSeparator();
+        JSeparator jSeparator4 = new JSeparator();
+        JPanel jPanel2 = new JPanel();
+        JLabel passengersLabel = new JLabel();
         passBox1 = new JCheckBox();
         surName1 = new JTextField();
         name1 = new JTextField();
@@ -98,7 +98,7 @@ public class Gui extends JFrame {
         surName6 = new JTextField();
         name6 = new JTextField();
         childBox6 = new JCheckBox();
-        jSeparator5 = new JSeparator();
+        JSeparator jSeparator5 = new JSeparator();
         lowSeatBox1 = new JCheckBox();
         lowSeatBox2 = new JCheckBox();
         lowSeatBox3 = new JCheckBox();
@@ -108,19 +108,19 @@ public class Gui extends JFrame {
         sameWagonBox = new JCheckBox();
         lateralDiscardBox = new JCheckBox();
         manualPlaceBox = new JCheckBox();
-        placesLabel = new JLabel();
-        placeField1 = new JTextField();
-        placefield2 = new JTextField();
-        placefield3 = new JTextField();
-        placefield4 = new JTextField();
-        placefield5 = new JTextField();
-        placefield6 = new JTextField();
+        JLabel placesLabel = new JLabel();
+        JTextField placeField1 = new JTextField();
+        JTextField placefield2 = new JTextField();
+        JTextField placefield3 = new JTextField();
+        JTextField placefield4 = new JTextField();
+        JTextField placefield5 = new JTextField();
+        JTextField placefield6 = new JTextField();
         placeFields = new JTextField[]{placeField1, placefield2, placefield3, placefield4, placefield5, placefield6};
         startFactorMembers = new JLabel[]{startLabel, destLabel, dateLabel, wagonTypeLabel};
         childBox1 = new JCheckBox();
-        jSeparator8 = new JSeparator();
-        wagonNumLabel = new JLabel();
-        wagonOnlyButton = new JRadioButton();
+        JSeparator jSeparator8 = new JSeparator();
+        JLabel wagonNumLabel = new JLabel();
+        JRadioButton wagonOnlyButton = new JRadioButton();
         anyWagonNumberButton = new JRadioButton();
         wagonExceptBox = new JCheckBox();
         wagonOnlyField = new JTextField();
@@ -1076,30 +1076,12 @@ public class Gui extends JFrame {
         }
     }
 
-    int getPassengerNumber() {
-        int counter = 0;
-        for (JCheckBox box : passengerBoxes) {
-            if (box.isSelected()) {
-                counter++;
-            }
-        }
-        return counter;
-    }
-
-    protected String getLogin() {
-        return usernameField.getText();
-    }
-
     public String getTrainNumber() {
         return anyTrainNumberButton.isSelected() ? "" : trainNumberField.getText().toUpperCase();
     }
 
     public String getStsrtbuttonText() {
         return startButton.getText();
-    }
-
-    protected String getPassword() {
-        return Arrays.toString(passwordField.getPassword());
     }
 
     public void enablePassenger(int num, boolean enable) {
@@ -1119,7 +1101,7 @@ public class Gui extends JFrame {
         childBoxes = new JCheckBox[]{childBox1, childBox2, childBox3, childBox4, childBox5, childBox6};
         surNameFields = new JTextField[]{surName1, surName2, surName3, surName4, surName5, surName6};
         nameFields = new JTextField[]{name1, name2, name3, name4, name5, name6};
-        table = new Hashtable<>();
+        Hashtable<Integer, Color> table = new Hashtable<>();
         table.put(0, Color.MAGENTA);
         table.put(1, Color.RED);
         table.put(2, Color.BLUE);
@@ -1178,11 +1160,6 @@ public class Gui extends JFrame {
         JLabel label = isStartStation ? startLabel : destLabel;
         label.setForeground(color);
     }
-
-    public void setStartButtonEnabled(boolean enable) {
-        startButton.setEnabled(enable);
-    }
-
     public void setSettingsEnabled(boolean enable) {
         startLabel.setEnabled(enable);
         startField.setEnabled(enable);
@@ -1229,9 +1206,6 @@ public class Gui extends JFrame {
     private JRadioButton anyWagonTypeButton;
     private JRadioButton anyTrainNumberButton;
     private JCheckBox authorizeBox;
-    private ButtonGroup buttonGroup1;
-    private ButtonGroup buttonGroup2;
-    private ButtonGroup buttonGroup3;
     private JRadioButton c1Button;
     private JRadioButton c2Button;
     private JButton changeButton;
@@ -1248,20 +1222,7 @@ public class Gui extends JFrame {
     private JLabel startLabel;
     private JCheckBox fullOrderBox;
     private JTextArea infoArea;
-    private JPanel jPanel1;
-    private JPanel jPanel2;
-    private JScrollPane jScrollPane1;
-    private JSeparator jSeparator1;
-    private JSeparator jSeparator2;
-    private JSeparator jSeparator3;
-    private JSeparator jSeparator4;
-    private JSeparator jSeparator5;
-    private JSeparator jSeparator6;
-    private JSeparator jSeparator7;
-    private JSeparator jSeparator8;
-    private JSeparator jSeparator9;
     private JCheckBox lateralDiscardBox;
-    private JLabel loginLabel;
     private JCheckBox lowSeatBox1;
     private JCheckBox lowSeatBox2;
     private JCheckBox lowSeatBox3;
@@ -1284,16 +1245,7 @@ public class Gui extends JFrame {
     private JCheckBox passBox4;
     private JCheckBox passBox5;
     private JCheckBox passBox6;
-    private JLabel passengersLabel;
     private JPasswordField passwordField;
-    private JLabel passwordLabel;
-    private JTextField placeField1;
-    private JTextField placefield2;
-    private JTextField placefield3;
-    private JTextField placefield4;
-    private JTextField placefield5;
-    private JTextField placefield6;
-    private JLabel placesLabel;
     private JRadioButton plazkartButton;
     private JCheckBox sameCupeBox;
     private JCheckBox sameWagonBox;
@@ -1313,8 +1265,6 @@ public class Gui extends JFrame {
     private JRadioButton anyWagonNumberButton;
     private JCheckBox wagonExceptBox;
     private JTextField wagonExceptField;
-    private JLabel wagonNumLabel;
-    private JRadioButton wagonOnlyButton;
     private JTextField wagonOnlyField;
     private JLabel wagonTypeLabel;
     private JLabel[] startFactorMembers;
@@ -1331,7 +1281,6 @@ public class Gui extends JFrame {
     @Getter
     private JTextField[] placeFields;
     private final Controller controller;
-    private Hashtable<Integer, Color> table;
     private DefaultComboBoxModel<String> _28daysModel;
     private DefaultComboBoxModel<String> _29daysModel;
     private DefaultComboBoxModel<String> _30daysModel;
