@@ -6,7 +6,13 @@ import lombok.Getter;
 
 @SuppressWarnings("WeakerAccess")
 public class Prices {
-    @Getter
     @JsonProperty("А")
-    int price;
+    int price1;
+
+    @JsonProperty("Б")
+    int price2;
+
+    public int getPrice() {
+        return price1 != 0 ? price1 : price2;
+    }
 }

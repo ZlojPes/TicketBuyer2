@@ -36,7 +36,7 @@
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <outputDirectory>target/classes</outputDirectory>
-        <finalName>Ticket Buyer 2.0.1</finalName>
+        <finalName>Ticket_Buyer_2.0.1</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -56,7 +56,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.ospavliuk.ticketbuyer2.Gui</mainClass>
+                            <mainClass>com.ospavliuk.ticketbuyer2.controller.ControllerImpl</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -68,7 +68,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.asp4rever.ticketbuyer.Gui</mainClass>
+                            <mainClass>com.ospavliuk.ticketbuyer2.controller.ControllerImpl</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
