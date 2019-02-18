@@ -1,5 +1,6 @@
 package com.ospavliuk.ticketbuyer2.model.jsonparser.trainlist;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
@@ -47,4 +48,6 @@ public class Train {
     @JsonProperty("allowPrivilege")
     private boolean allowPrivilege;
 
+    @JsonIgnoreProperties("noReserve")
+    private boolean noReserve;
 }

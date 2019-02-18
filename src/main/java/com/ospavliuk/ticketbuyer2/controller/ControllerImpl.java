@@ -12,6 +12,7 @@ import java.util.*;
 
 public class ControllerImpl implements Controller {
     private Gui gui;
+    private Model model;
     private WagonType wagonType;
     private static final Set<Station> stations;
     private int day, month, year;
@@ -68,6 +69,11 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    @Override
     public String getDate() {
         return year + "-" + String.format("%02d", month) + "-" + String.format("%02d", day);
     }
@@ -98,7 +104,7 @@ public class ControllerImpl implements Controller {
         if (gui.getStsrtbuttonText().equals("СТАРТ")) {
             out = "СТОП";
             gui.setSettingsEnabled(false);
-            Model model = new Model(this, gui);
+            model = new Model(this, gui);
             createPassengerList();
             model.start();
             running = true;

@@ -15,7 +15,6 @@ import java.util.*;
 public class Model extends Thread {
     private final Controller controller;
     private final Gui gui;
-    private boolean success = false;
 
     public Model(Controller controller, Gui gui) {
         this.controller = controller;
@@ -44,7 +43,7 @@ public class Model extends Thread {
                 return;
             }
             TrainParser trainParser;
-            while (!success) {
+            while (controller.isRunning()) {
                 long start = System.currentTimeMillis();
                 urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", props, params);
                 trainParser = mapper.readValue(urlSource, TrainParser.class);
@@ -65,17 +64,23 @@ public class Model extends Thread {
                 trainParser.getData().getTrainList().stream().
                         filter(train -> train.getNumber().contains(gui.getTrainNumber())).
                         forEach(train -> {
-                            if (success) {
+                            if (!controller.isRunning()) {
                                 return;
                             }
                             List<WagonType> types = train.getWagonTypeList();
                             types.stream().
                                     filter(wagonType -> wagonType.getLetter().contains(controller.getSelectedWagonType())).
                                     forEach(wagonType -> {
-                                        if (success) {
+                                        if (!controller.isRunning()) {
                                             return;
                                         }
-                                        gui.println(train.getNumber() + " В пути: " + train.getTravelTime() + "\n" + wagonType.getTitle() + ": " + wagonType.getPlaces());
+                                        gui.print("Поезд № " + train.getNumber() + " В пути: " + train.getTravelTime() + "\n"
+                                                + wagonType.getTitle() + ": " + wagonType.getPlaces() + " свободных мест в поезде");
+                                        if (wagonType.getPlaces() < passengerList.size()) {
+                                            gui.println(" недостаточно");
+                                            return;
+                                        }
+                                        gui.println("");
                                         params.put("train", train.getNumber());
                                         params.put("wagon_type_id", wagonType.getLetter());
                                         String urlSource2;
@@ -83,7 +88,7 @@ public class Model extends Thread {
                                             urlSource2 = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_wagons/", "POST", props, params);
                                             WagonParser wagonParser = mapper.readValue(urlSource2, WagonParser.class);
                                             wagonParser.getData().getSelectedCategoryWagons().forEach(type -> {
-                                                if (success) {
+                                                if (!controller.isRunning()) {
                                                     return;
                                                 }
                                                 gui.println("Price: " + (float) type.getPrices().getPrice() / 100);
@@ -130,9 +135,10 @@ public class Model extends Thread {
                                                         if (urlSource4.contains("\"brand\":\"" + train.getNumber()) /*&& urlSource4.contains("\"placesCount\":" + passengerList.size())*/) {
                                                             gui.println("Билеты успешно добавлены в корзину!");
                                                             gui.println(HtmlGetterUZ.getSessionId());
-                                                            setSuccess(true);
+                                                            controller.setRunning(false);
                                                         } else {
-                                                            gui.print("Ошибка добавления в корзину");
+                                                            gui.println("Ошибка добавления в корзину");
+                                                            gui.println(urlSource4.substring(urlSource4.indexOf("\"error\":[\"") + 10, urlSource4.indexOf("\"],\"analytics\"")));
                                                         }
                                                         controller.startStop();
                                                     }
@@ -145,7 +151,7 @@ public class Model extends Thread {
                                         }
                                     });
                         });
-                if (success) {
+                if (!controller.isRunning()) {
                     return;
                 }
                 long delay = System.currentTimeMillis() - start;
@@ -161,9 +167,5 @@ public class Model extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    void setSuccess(boolean s) {
-        success = s;
     }
 }

@@ -161,6 +161,14 @@ public class Gui extends JFrame {
         destLabel.setFont(font);
         destLabel.setForeground(Color.RED);
         destLabel.setText("Куда");
+        destLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                destField.removeAllItems();
+                destField.getEditor().setItem("ОДЕССА-ГЛАВНАЯ");
+                stationIsTyping(destField);
+            }
+        });
+
         dateLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 LocalDate ld = LocalDate.from(new Date().toInstant().atZone(ZoneId.of("UTC"))).plusDays(44);

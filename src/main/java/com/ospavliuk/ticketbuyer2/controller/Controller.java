@@ -9,6 +9,8 @@ public interface Controller {
 
     boolean isRunning();
 
+    void setRunning(boolean running);
+
     String getDate();
 
     String getChildDate();
