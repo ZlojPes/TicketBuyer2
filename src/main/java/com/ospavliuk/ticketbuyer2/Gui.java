@@ -67,6 +67,7 @@ public class Gui extends JFrame {
         usernameField = new JTextField();
         JLabel loginLabel = new JLabel();
         JLabel passwordLabel = new JLabel();
+        JLabel noSeatsLabel = new JLabel();
         passwordField = new JPasswordField();
         startField = new JComboBox<>();
         destField = new JComboBox<>();
@@ -271,8 +272,11 @@ public class Gui extends JFrame {
         loginLabel.setText("Login");
 
         passwordLabel.setText("Password");
-
         passwordField.setEnabled(false);
+
+
+        noSeatsLabel.setText("Мест нет!");
+        noSeatsLabel.setEnabled(false);
 
         startField.setEditable(true);
         startField.setFont(font);
@@ -336,6 +340,9 @@ public class Gui extends JFrame {
                                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                         .addComponent(passwordLabel)
                                                         .addGap(48, 48, 48))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(160, 160, 160)
+                                                .addComponent(noSeatsLabel))
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                                         .addGap(23, 23, 23)
                                                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -461,6 +468,8 @@ public class Gui extends JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jSeparator7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(noSeatsLabel)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 160, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
