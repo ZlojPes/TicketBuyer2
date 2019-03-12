@@ -7,4 +7,8 @@ public class TrainParser {
     @Getter
     @JsonProperty("data")
     Data data;
+
+    @Getter
+    @JsonProperty("error")
+    Integer error;
 }

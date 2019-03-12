@@ -67,7 +67,7 @@ public class Gui extends JFrame {
         usernameField = new JTextField();
         JLabel loginLabel = new JLabel();
         JLabel passwordLabel = new JLabel();
-        JLabel noSeatsLabel = new JLabel();
+        noSeatsLabel = new JLabel();
         passwordField = new JPasswordField();
         startField = new JComboBox<>();
         destField = new JComboBox<>();
@@ -276,6 +276,7 @@ public class Gui extends JFrame {
 
 
         noSeatsLabel.setText("Мест нет!");
+        noSeatsLabel.setForeground(Color.RED);
         noSeatsLabel.setEnabled(false);
 
         startField.setEditable(true);
@@ -1093,6 +1094,14 @@ public class Gui extends JFrame {
         }
     }
 
+    public void noFreePlaces(){
+        noSeatsLabel.setEnabled(!noSeatsLabel.isEnabled());
+        if (infoArea.getText().isEmpty()){
+            println("По заданному Вами направлению мест нет");
+            println("Проверка ведется с интервалом 1 секунда");
+        }
+    }
+
     public String getTrainNumber() {
         return anyTrainNumberButton.isSelected() ? "" : trainNumberField.getText().toUpperCase();
     }
@@ -1302,4 +1311,5 @@ public class Gui extends JFrame {
     private DefaultComboBoxModel<String> _29daysModel;
     private DefaultComboBoxModel<String> _30daysModel;
     private DefaultComboBoxModel<String> _31daysModel;
+    private JLabel noSeatsLabel;
 }

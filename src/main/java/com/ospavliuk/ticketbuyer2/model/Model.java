@@ -47,9 +47,19 @@ public class Model extends Thread {
                 long start = System.currentTimeMillis();
                 urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", props, params);
                 trainParser = mapper.readValue(urlSource, TrainParser.class);
+                if (trainParser.getError()!= null){
+                    gui.println("Ошибка!");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    continue;
+                }
                 String warningMessage = trainParser.getData().getWarning();
                 if (warningMessage != null) {
-                    gui.println(warningMessage);
+                    if (warningMessage.equals("По заданному Вами направлению мест нет"))
+                        gui.noFreePlaces();
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
