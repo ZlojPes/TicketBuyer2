@@ -43,11 +43,12 @@ public class Model extends Thread {
                 return;
             }
             TrainParser trainParser;
+            String trainInfoMessage = "";
             while (controller.isRunning()) {
                 long start = System.currentTimeMillis();
                 urlSource = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_search/", "POST", props, params);
                 trainParser = mapper.readValue(urlSource, TrainParser.class);
-                if (trainParser.getError()!= null){
+                if (trainParser.getError() != null) {
                     gui.println("Ошибка!");
                     try {
                         Thread.sleep(2000);
@@ -97,65 +98,67 @@ public class Model extends Thread {
                                         try {
                                             urlSource2 = HtmlGetterUZ.getUrlSource("https://booking.uz.gov.ua/ru/train_wagons/", "POST", props, params);
                                             WagonParser wagonParser = mapper.readValue(urlSource2, WagonParser.class);
-                                            wagonParser.getData().getSelectedCategoryWagons().forEach(type -> {
-                                                if (!controller.isRunning()) {
-                                                    return;
-                                                }
-                                                gui.println("Price: " + (float) type.getPrices().getPrice() / 100);
-                                                params.put("wagon_num", String.valueOf(type.getNumber()));
-                                                params.put("wagon_type", type.getType());
-                                                params.put("wagon_class", type.getWagonClass());
-                                                try {
-                                                    String urlSource3 = HtmlGetterUZ.getUrlSource(" https://booking.uz.gov.ua/ru/train_wagon/", "POST", props, params);
-                                                    PlaceParser placeParser = mapper.readValue(urlSource3, PlaceParser.class);
-                                                    List<String> placeList = placeParser.getData().getPlaces().getPlaceList();
-                                                    if (placeList.size() >= passengerList.size()) {
-                                                        Iterator<String> iterator = placeList.iterator();
-                                                        passengerList.forEach(passenger -> {
-                                                            if (passenger.getPlace().isEmpty() && iterator.hasNext()) {
-                                                                passenger.setPlace(iterator.next());
+                                            wagonParser.getData().getSelectedCategoryWagons().stream()
+                                                    .filter(type -> String.valueOf(type.getNumber()).contains(gui.getWagonNumer()))
+                                                    .forEach(type -> {
+                                                        if (!controller.isRunning()) {
+                                                            return;
+                                                        }
+                                                        gui.println("Price: " + (float) type.getPrices().getPrice() / 100);
+                                                        params.put("wagon_num", String.valueOf(type.getNumber()));
+                                                        params.put("wagon_type", type.getType());
+                                                        params.put("wagon_class", type.getWagonClass());
+                                                        try {
+                                                            String urlSource3 = HtmlGetterUZ.getUrlSource(" https://booking.uz.gov.ua/ru/train_wagon/", "POST", props, params);
+                                                            PlaceParser placeParser = mapper.readValue(urlSource3, PlaceParser.class);
+                                                            List<String> placeList = placeParser.getData().getPlaces().getPlaceList();
+                                                            if (placeList.size() >= passengerList.size()) {
+                                                                Iterator<String> iterator = placeList.iterator();
+                                                                passengerList.forEach(passenger -> {
+                                                                    if (passenger.getPlace().isEmpty() && iterator.hasNext()) {
+                                                                        passenger.setPlace(iterator.next());
+                                                                    }
+                                                                });
+                                                                Map<String, String> orderParams = new LinkedHashMap<>();
+                                                                for (int i = 0; i < passengerList.size(); i++) {
+                                                                    Passenger passenger = passengerList.get(i);
+                                                                    orderParams.put("places[" + i + "][ord]", String.valueOf(i));
+                                                                    orderParams.put("places[" + i + "][from]", String.valueOf(controller.getStartStation()));
+                                                                    orderParams.put("places[" + i + "][to]", String.valueOf(controller.getDestStation()));
+                                                                    orderParams.put("places[" + i + "][train]", train.getNumber());
+                                                                    orderParams.put("places[" + i + "][date]", controller.getDate());
+                                                                    orderParams.put("places[" + i + "][wagon_num]", String.valueOf(type.getNumber()));
+                                                                    orderParams.put("places[" + i + "][wagon_class]", type.getWagonClass());
+                                                                    String t = type.getType();
+                                                                    orderParams.put("places[" + i + "][wagon_type]", t);
+                                                                    orderParams.put("places[" + i + "][wagon_railway]", "43");
+                                                                    orderParams.put("places[" + i + "][charline]", "А");
+                                                                    orderParams.put("places[" + i + "][firstname]", passenger.getName());
+                                                                    orderParams.put("places[" + i + "][lastname]", passenger.getSurName());
+                                                                    orderParams.put("places[" + i + "][bedding]", t.equals("К") | t.equals("П") | t.equals("Л") ? "1" : "0");
+                                                                    orderParams.put("places[" + i + "][services][]", "Н");
+                                                                    orderParams.put("places[" + i + "][child]", passenger.isChild() ? controller.getChildDate() : "");
+                                                                    orderParams.put("places[" + i + "][student]", "");
+                                                                    orderParams.put("places[" + i + "][reserve]", "0");
+                                                                    orderParams.put("places[" + i + "][place_num]", passenger.getPlace());
+                                                                }
+                                                                orderParams.forEach((key, value) -> System.out.println(key + ":" + value));
+                                                                String urlSource4 = HtmlGetterUZ.getUrlSource(" https://booking.uz.gov.ua/ru/cart/add/", "POST", props, orderParams);
+                                                                System.out.println("\n" + urlSource4);
+                                                                if (urlSource4.contains("\"brand\":\"" + train.getNumber()) /*&& urlSource4.contains("\"placesCount\":" + passengerList.size())*/) {
+                                                                    gui.println("Билеты успешно добавлены в корзину!");
+                                                                    gui.println(HtmlGetterUZ.getSessionId());
+                                                                    controller.setRunning(false);
+                                                                } else {
+                                                                    gui.println("Ошибка добавления в корзину");
+                                                                    gui.println(urlSource4.substring(urlSource4.indexOf("\"error\":[\"") + 10, urlSource4.indexOf("\"],\"analytics\"")));
+                                                                }
+                                                                controller.startStop();
                                                             }
-                                                        });
-                                                        Map<String, String> orderParams = new LinkedHashMap<>();
-                                                        for (int i = 0; i < passengerList.size(); i++) {
-                                                            Passenger passenger = passengerList.get(i);
-                                                            orderParams.put("places[" + i + "][ord]", String.valueOf(i));
-                                                            orderParams.put("places[" + i + "][from]", String.valueOf(controller.getStartStation()));
-                                                            orderParams.put("places[" + i + "][to]", String.valueOf(controller.getDestStation()));
-                                                            orderParams.put("places[" + i + "][train]", train.getNumber());
-                                                            orderParams.put("places[" + i + "][date]", controller.getDate());
-                                                            orderParams.put("places[" + i + "][wagon_num]", String.valueOf(type.getNumber()));
-                                                            orderParams.put("places[" + i + "][wagon_class]", type.getWagonClass());
-                                                            String t = type.getType();
-                                                            orderParams.put("places[" + i + "][wagon_type]", t);
-                                                            orderParams.put("places[" + i + "][wagon_railway]", "43");
-                                                            orderParams.put("places[" + i + "][charline]", "А");
-                                                            orderParams.put("places[" + i + "][firstname]", passenger.getName());
-                                                            orderParams.put("places[" + i + "][lastname]", passenger.getSurName());
-                                                            orderParams.put("places[" + i + "][bedding]", t.equals("К") | t.equals("П") | t.equals("Л") ? "1" : "0");
-                                                            orderParams.put("places[" + i + "][services][]", "Н");
-                                                            orderParams.put("places[" + i + "][child]", passenger.isChild() ? controller.getChildDate() : "");
-                                                            orderParams.put("places[" + i + "][student]", "");
-                                                            orderParams.put("places[" + i + "][reserve]", "0");
-                                                            orderParams.put("places[" + i + "][place_num]", passenger.getPlace());
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
                                                         }
-                                                        orderParams.forEach((key, value) -> System.out.println(key + ":" + value));
-                                                        String urlSource4 = HtmlGetterUZ.getUrlSource(" https://booking.uz.gov.ua/ru/cart/add/", "POST", props, orderParams);
-                                                        System.out.println("\n" + urlSource4);
-                                                        if (urlSource4.contains("\"brand\":\"" + train.getNumber()) /*&& urlSource4.contains("\"placesCount\":" + passengerList.size())*/) {
-                                                            gui.println("Билеты успешно добавлены в корзину!");
-                                                            gui.println(HtmlGetterUZ.getSessionId());
-                                                            controller.setRunning(false);
-                                                        } else {
-                                                            gui.println("Ошибка добавления в корзину");
-                                                            gui.println(urlSource4.substring(urlSource4.indexOf("\"error\":[\"") + 10, urlSource4.indexOf("\"],\"analytics\"")));
-                                                        }
-                                                        controller.startStop();
-                                                    }
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            });
+                                                    });
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }

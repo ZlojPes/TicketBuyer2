@@ -341,9 +341,9 @@ public class Gui extends JFrame {
                                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                         .addComponent(passwordLabel)
                                                         .addGap(48, 48, 48))
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGap(160, 160, 160)
-                                                .addComponent(noSeatsLabel))
+                                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                                        .addGap(160, 160, 160)
+                                                        .addComponent(noSeatsLabel))
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                                         .addGap(23, 23, 23)
                                                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -1094,9 +1094,9 @@ public class Gui extends JFrame {
         }
     }
 
-    public void noFreePlaces(){
+    public void noFreePlaces() {
         noSeatsLabel.setEnabled(!noSeatsLabel.isEnabled());
-        if (infoArea.getText().isEmpty()){
+        if (infoArea.getText().isEmpty()) {
             println("По заданному Вами направлению мест нет");
             println("Проверка ведется с интервалом 1 секунда");
         }
@@ -1104,6 +1104,10 @@ public class Gui extends JFrame {
 
     public String getTrainNumber() {
         return anyTrainNumberButton.isSelected() ? "" : trainNumberField.getText().toUpperCase();
+    }
+
+    public String getWagonNumer() {
+        return wagonOnlyField.getText();
     }
 
     public String getStsrtbuttonText() {
@@ -1162,6 +1166,9 @@ public class Gui extends JFrame {
     }
 
     public void setWagonOnlyFieldEnabled(boolean enable) {
+        if (!enable) {
+            wagonOnlyField.setText("");
+        }
         wagonOnlyField.setEnabled(enable);
         wagonExceptBox.setEnabled(!enable);
         wagonExceptField.setEnabled(!enable && wagonExceptBox.isSelected());
@@ -1186,6 +1193,7 @@ public class Gui extends JFrame {
         JLabel label = isStartStation ? startLabel : destLabel;
         label.setForeground(color);
     }
+
     public void setSettingsEnabled(boolean enable) {
         startLabel.setEnabled(enable);
         startField.setEnabled(enable);
